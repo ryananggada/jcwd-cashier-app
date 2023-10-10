@@ -11,12 +11,6 @@ exports.registerValidator = [
     minNumbers: 1,
     minSymbols: 1,
   }),
-  body("email").isEmail().withMessage("Email is not valid"),
-  body("firstName").isLength({ min: 3, max: 20 }),
-  body("lastName").isLength({ min: 3, max: 20 }),
-  body("age").isInt({ min: 1, max: 100 }),
-  body("phoneNumber").isMobilePhone(),
-  body("city").isLength({ min: 5, max: 20 }),
 ];
 
 exports.registerChecker = (req, res, next) => {
