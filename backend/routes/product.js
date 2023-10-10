@@ -1,9 +1,12 @@
 const router = require("express").Router();
-const { Product } = require("../models");
+const authMiddleware = require("../middleware/auth");
+const productController = require("../controller/product");
 
-router.get("/", async (req, res) => {});
-router.post("/add-product", async (req, res) => {});
-router.put("/edit-product/:id", async (req, res) => {});
-router.delete("/delete-product/:id", async (req, res) => {});
+router.post(
+  "/add-new-product",
+  authMiddleware.tokenValidator,
+  authMiddleware.adminValidator,
+  productController.addNewProduct
+);
 
 module.exports = router;
