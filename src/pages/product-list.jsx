@@ -1,19 +1,48 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import api from "../api"
-import { Link, useParams, useSearchParams } from "react-router-dom"
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom"
+import Dashboard from "../components/Dashboard"
 
 function ProductList() {
     const { page } = useParams();
+    const location = useLocation()
     const [products, setProducts] = useState([{
         productName: "brick",
         productPrice: 1,
-        productImage: "",
-        category: "",
+        productImage: "https://pbs.twimg.com/media/DvOOcFCUYAA0OXa?format=jpg&name=small",
+        category: 1,
         description: "useless",
+        isActive: true
+    },
+    {
+        productName: "nomium",
+        productPrice: 3000,
+        productImage: "https://cdn.7tv.app/emote/6262ca3795fb1400ef2f93c1/4x.webp",
+        category: 1,
+        description: "makes you want to cook something",
         isActive: true
     }])
     const [productAmount, setProductAmount] = useState(1)
     const [searchParams, setSearchParams] = useSearchParams();
+    const [categories, setCategories] = useState([{
+        id: 1,
+        name: "nom",
+        description: "nom"
+    }])
+    /* 
+    useEffect(() => {
+        api
+            .get(`/products/products/${page}?SortByPrice=${searchParams.get(sortByPrice)}&sortAscend=${searchParams.get(sortAscend)}&category=${searchParams.get(categoryFilter)}&nameFilter=${searchParams.get(nameFilter)}`)
+            .then((res) => {
+                setProducts(res.data)
+                setProductAmount(res.itemAmount)
+            })
+            .get
+            .catch((err) => {
+                // Something has gone wrong.
+            })
+    }, [ location ]) 
+    */
     /* 
     const fetchData = async () => {
         try {
@@ -30,14 +59,17 @@ function ProductList() {
     const 
     */
 
-    return (<>
+    return (
+    <Dashboard>
         {isNaN(page) 
         ?<div>
-            Page must be a number!
-            <Link to="/products/0">return</Link>
+            <div>
+                ERROR
+            </div>
+            Page must be a number.
         </div>
-        :<div>
-            <form action="" method="post">
+        : <div>
+            <form action="">
                 Looking for something?
                 <input type="text" name="nameFilter" placeholder="Product Name"/>
                 <input type="text" name="categoryFilter" placeholder="Product Category"/>
@@ -47,25 +79,42 @@ function ProductList() {
                 <input type="radio" name="sortAscend" value="1"/> {searchParams.get("sortByPrice") ? "Lowest to highest price" : "A-z"}
                 <button type="submit">done?</button>
             </form>
+            <section>
             {/** Karena sudah disort, tinggal map saja hasil itemnya. */}
             {products.map(item => (<div>
                 <div>
                     {item.productPrice}
                 </div>
-                {item.productName}
-                {item.productImage}
-                {item.category}
-                {item.description}
+                <div>
+                    {item.productName}
+                </div>
+                <image path={item.productImage}/>
+                <div>
+                    {item.category}
+                </div>
+                <div>
+                    {item.description}
+                </div>
                 {item.isActive}
             </div>))}
-            {"\n"}
-            {(page > 0) ? 
-            <Link to={`/products/${(Number(page) - 1)}`}>{"<"}</Link>
+            </section>
+            </div>
+        }
+        {((!isNaN(page)) && (page > 0)) 
+            ? <Link to={`/products/${(Number(page) - 1)}`}>{"<"}</Link>
             : <></>
-            } {page}
-            <Link to={`/products/${Number(page) + 1}`}>{">"}</Link>
-        </div>}
-    </>)
+            } 
+            {/* Ketik angka disini untuk mengganti halaman. */}
+            {isNaN(page)
+            ? <Link to="/products/0">Return</Link> 
+            : page
+            } 
+            { ((!isNaN(page)) && (productAmount > (10 * (Number(page) + 1))))
+            ? <Link to={`/products/${Number(page) + 1}`}>{">"}</Link>
+            : <></>
+        }
+        </Dashboard>
+    )
 }
 
 export default ProductList
