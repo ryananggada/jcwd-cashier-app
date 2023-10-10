@@ -65,4 +65,52 @@ exports.handleAddCategory = async (req, res) => {
     }
 }
 
-e
+exports.handleGetCategoryById = async(req, res) => {
+    const { id } = req.params
+    try {
+        const category = await Category.findOne({
+            where: { id }
+        })
+        if (!category) {
+            return res.status(404).json({ ok: false, message: "Category not found" });
+        }
+    } catch(err){
+        res.status(500).json({ ok: false, message: err.message})
+    }
+}
+
+exports.handleEditCategory = async (req, res) => {
+    const { id } = req.params
+    const { name, description } = req.body
+    try {
+        const category = await Category.findOne({
+            where: { id }
+        })
+        if (!category) {
+            return res.status(404).json({ ok: false, message: "Category not found" });
+        }
+        category.name = name
+        category.description = description
+
+        await category.save()
+        res.status(200).json({
+            ok: true,
+            data: category,
+        })
+    } catch(err) {
+        res.status(500).json({
+            ok: false,
+            message: err.message
+        })
+    }
+}
+
+exports.handleDeleteCategory = async (req, res) => {
+    const { id } = req.params
+    try {
+        const category = await Category.destroy({ where: { id }})
+        res.status(200).json({ ok: true, data: category})
+    } catch(err) {
+        res.status(500).json({ ok: false, message: err.message})
+    }
+}

@@ -9,11 +9,15 @@ router.post(
   productController.addNewProduct
 );
 const productListController = require("../controller/product-list");
-const { Product } = require("../models");
 
-router.get("/categories", productListController.handleAddCategory)
+router.get("/categories", productListController.handleGetCategories)
+router.get("/categories/:id", productListController.handleGetCategoryById)
+router.post("/categories", productListController.handleAddCategory)
+router.put("/categories/:id", productListController.handleEditCategory)
+router.patch("/categories/:id", productListController.handleEditCategory)
+router.delete("/categories/:id", productListController.handleDeleteCategory)
+
 router.get("/products/:page", productListController.handleGetProducts)
-
 router.post("/add-product", async (req, res) => {});
 router.put("/edit-product/:id", async (req, res) => {});
 router.delete("/delete-product/:id", async (req, res) => {});
