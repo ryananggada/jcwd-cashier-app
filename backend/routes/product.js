@@ -3,10 +3,16 @@ const authMiddleware = require("../middleware/auth");
 const productController = require("../controller/product");
 
 router.post(
-  "/add-new-product",
+  "/",
   authMiddleware.tokenValidator,
   authMiddleware.adminValidator,
   productController.addNewProduct
+);
+router.put(
+  "/",
+  authMiddleware.tokenValidator,
+  authMiddleware.adminValidator,
+  productController.editProduct
 );
 
 module.exports = router;
