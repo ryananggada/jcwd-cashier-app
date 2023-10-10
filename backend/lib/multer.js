@@ -24,10 +24,11 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// 1 megabyte
 exports.multerUpload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 1024 * 10, // 1 MB
+    fileSize: 10 * 1024 * 1024,
   },
 });

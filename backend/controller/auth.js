@@ -29,7 +29,7 @@ exports.loginHandler = async (req, res, next) => {
     });
   }
 
-  const payload = { id: user.id, role: user.role };
+  const payload = { id: user.id, role: user.role, userName: user.name };
   const token = jwt.sign(payload, JWT_SECRET_KEY, {
     expiresIn: "1d",
   });
@@ -67,6 +67,7 @@ exports.createNewCashier = async (req, res, next) => {
     username,
     password: hashedPassword,
     name,
+    role: "cashier",
   });
 
   return res.json({
@@ -76,4 +77,20 @@ exports.createNewCashier = async (req, res, next) => {
       name: newUser.name,
     },
   });
+};
+
+exports.updateProfilePicture = async (req, res) => {
+  const userId = req.user.id;
+  const profilePicture = req.file.filename;
+
+  const user = await User.findOne({ where: { id: userId } });
+  if (!user) {
+    res.status(404).json({ ok: false, message: "User not found" });
+    return;
+  }
+
+  user.profilePicture = profilePicture;
+  await user.save();
+
+  res.json({ ok: true, data: user });
 };

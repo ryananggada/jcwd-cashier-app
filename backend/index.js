@@ -4,11 +4,14 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(express.json());
-const authRouter = require("./routes/auth");
-app.use("/auth", authRouter);
 
-// const myRouter = require("./routes/myRoute");
-// app.use("/myRoute", myRouter);
+const authRouter = require("./routes/auth");
+const categoryRouter = require("./routes/category");
+const productRouter = require("./routes/product");
+
+app.use("/auth", authRouter);
+app.use("/categories", categoryRouter);
+app.use("/products", productRouter);
 
 // 404 Not Found route
 app.use((req, res) => {
