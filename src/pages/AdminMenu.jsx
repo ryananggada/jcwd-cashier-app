@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik"; // Import useFormik from Formik
 import * as Yup from "yup"; // Import Yup for validation
 import api from "../api.js";
+import AdminControlPanel from "../components/AdminControlPanel.jsx";
 
 export default function AdminMenu() {
   const validationSchema = Yup.object({
@@ -57,6 +58,8 @@ export default function AdminMenu() {
         ) : null}
         <button type="submit">Update Profile Picture</button>
       </form>
+
+      <AdminControlPanel />
 
       {/* <Link to="/auth/updateprofile">View Profile</Link> */}
     </div>

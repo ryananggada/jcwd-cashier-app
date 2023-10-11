@@ -47,3 +47,55 @@ exports.editProduct = async (req, res) => {
     return res.status(400).json({ ok: false, message: String(error) });
   }
 };
+
+exports.handleGetProducts = async (req, res) => {
+  const { sortByPrice, sortAscend, category, nameFilter } = req.query
+  try {
+      const {count, products} = await Product.findAndCountAll({
+          order: [sortByPrice ? "productPrice" : "productName", sortAscend ? "ASC" : "DESC"],
+          where: {
+              categoryId : category,
+              productName : nameFilter
+          }
+      })
+      res.status(200).json({
+          ok: true,
+          data: products,
+          itemAmount: count
+      })
+  } catch(err) {
+      res.status(400).json({
+          ok: false,
+          message: err.message
+      })
+  }
+}
+
+exports.handleGetProductsPage = async (req, res) => {
+  const { page } = req.params
+  const { sortByPrice, sortAscend, category, nameFilter } = req.query
+  try {
+      if (isNaN(page)) {
+          throw "Page must be a number"
+      }
+      const {count, products} = await Product.findAndCountAll({
+          order: [sortByPrice ? "productPrice" : "productName", sortAscend ? "ASC" : "DESC"],
+          limit: 10,
+          offset: (10 * page),
+          where: {
+              categoryId : category,
+              productName : nameFilter
+          }
+      })
+      res.status(200).json({
+          ok: true,
+          data: products,
+          itemAmount: count
+      })
+  } catch(err) {
+      res.status(400).json({
+          ok: false,
+          message: err.message
+      })
+  }
+}
