@@ -8,10 +8,12 @@ app.use(express.json());
 const authRouter = require("./routes/auth");
 const categoryRouter = require("./routes/category");
 const productRouter = require("./routes/product");
+const adminRouter = require("./routes/admin");
 
 app.use("/auth", authRouter);
 app.use("/categories", categoryRouter);
 app.use("/products", productRouter);
+app.use("/admin", adminRouter);
 
 // 404 Not Found route
 app.use((req, res) => {

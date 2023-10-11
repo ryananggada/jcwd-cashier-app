@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       profilePicture: DataTypes.STRING,
       role: DataTypes.ENUM("admin", "cashier"),
+      isActive: DataTypes.BOOLEAN,
     },
     {
       sequelize,
