@@ -1,6 +1,95 @@
+import { useState } from "react";
+import * as yup from "yup";
+import { useFormik } from "formik";
 import Dashboard from "../components/Dashboard";
+import api from "../api";
 
 function CreateProduct() {
+  const [uploadedImage, setUploadedImage] = useState(null);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAddProduct = async (
+    name,
+    price,
+    category,
+    image,
+    description
+  ) => {
+    try {
+      const response = await api.post(
+        "/products",
+        {
+          name,
+          price,
+          category,
+          image,
+          description,
+        },
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwidXNlck5hbWUiOiJSeWFuIiwiaWF0IjoxNjk3MDAzNTgzLCJleHAiOjE2OTcwODk5ODN9.ll9kcx-QJAwnDJkKC6OL_7XXa3EfbVAWNENTrrGzZ-o",
+          },
+        }
+      );
+
+      const productData = response.data;
+      console.log(productData);
+      window.alert("Adding product success!");
+    } catch (error) {
+      window.alert("Something went wrong:", error);
+      console.log(error);
+    }
+  };
+
+  const productSchema = yup.object().shape({
+    name: yup
+      .string()
+      .required("Name cannot be empty")
+      .min(3, "Minimum length is 3"),
+    price: yup
+      .number()
+      .positive("Price cannot be negative or zero")
+      .required("Price cannot be empty"),
+    category: yup.string().required("Category cannot be empty"),
+    //image: yup.string().required("Image is required"),
+    description: yup
+      .string()
+      .required("Descrption cannot be empty")
+      .min(3, "Minimum length is 3"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      price: 0,
+      category: "",
+      description: "",
+    },
+    validationSchema: productSchema,
+    onSubmit: (values) => {
+      console.log("asdasd");
+      const { name, price, category, description } = values;
+      handleAddProduct(
+        name,
+        parseInt(price, 10),
+        category,
+        uploadedImage.slice(0, 50),
+        description
+      );
+    },
+  });
+
   return (
     <Dashboard>
       <section>
@@ -8,11 +97,11 @@ function CreateProduct() {
           <h2 className="mb-4 text-xl font-bold text-gray-900">
             Add a new product
           </h2>
-          <form action="#">
+          <form onSubmit={formik.handleSubmit}>
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
               <div className="sm:col-span-2">
                 <label
-                  for="name"
+                  htmlFor="name"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Product Name
@@ -21,85 +110,145 @@ function CreateProduct() {
                   type="text"
                   name="name"
                   id="name"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
+                  className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 ${
+                    formik.touched.name && formik.errors.name
+                      ? "border-red-500"
+                      : ""
+                  }`}
                   placeholder="Type product name"
-                  required=""
+                  required
+                  {...formik.getFieldProps("name")}
                 />
+                {formik.touched.name && formik.errors.name && (
+                  <div className="text-red-500">{formik.errors.name}</div>
+                )}
               </div>
-              <div class="w-full">
+              <div className="w-full">
                 <label
-                  for="price"
-                  class="block mb-2 text-sm font-medium text-gray-900"
+                  htmlFor="price"
+                  className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Price
                 </label>
                 <input
-                  type="text"
+                  type="number"
+                  step="1000"
                   name="price"
                   id="price"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
+                  className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 ${
+                    formik.touched.price && formik.errors.price
+                      ? "border-red-500"
+                      : ""
+                  }`}
                   placeholder="Price"
-                  required=""
+                  required
+                  {...formik.getFieldProps("price")}
                 />
+                {formik.touched.price && formik.errors.price && (
+                  <div className="text-red-500">{formik.errors.price}</div>
+                )}
               </div>
-              <div class="w-full">
+              <div className="w-full">
                 <label
-                  for="category"
-                  class="block mb-2 text-sm font-medium text-gray-900"
+                  htmlFor="category"
+                  className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Category
                 </label>
                 <select
                   id="category"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-500 block w-full p-2.5"
+                  {...formik.getFieldProps("category")}
                 >
-                  <option selected="">Select category</option>
-                  <option value="TV">TV/Monitors</option>
-                  <option value="PC">PC</option>
-                  <option value="GA">Gaming/Console</option>
-                  <option value="PH">Phones</option>
+                  <option value=""></option>
+                  <option value="Food">Food</option>
+                  <option value="Drink">Drink</option>
                 </select>
+                {formik.touched.category && formik.errors.category && (
+                  <div className="text-red-500">{formik.errors.category}</div>
+                )}
               </div>
-              <div className="sm:col-span-2">
+              <div className="sm:col-span-2 mb-6">
                 <label
-                  for=""
-                  class="block mb-2 text-sm font-medium text-gray-900"
+                  htmlFor=""
+                  className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Upload Product Image
                 </label>
-                <div class="flex items-center justify-center w-full">
+                <div className="flex items-center justify-center w-full">
                   <label
-                    for="dropzone-file"
-                    class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 hover:bg-gray-100"
+                    htmlFor="dropzone-file"
+                    className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 hover:bg-gray-100"
                   >
-                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                      <svg
-                        class="w-8 h-8 mb-4 text-gray-500"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 16"
-                      >
-                        <path
-                          stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      {uploadedImage !== null ? (
+                        <img
+                          src={uploadedImage}
+                          alt="Selected"
+                          className="w-10/12 sm:w-full max-h-52"
                         />
-                      </svg>
-                      <p class="mb-2 text-sm text-gray-500">
-                        <span class="font-semibold">Click to upload</span> or
-                        drag and drop
-                      </p>
-                      <p class="text-xs text-gray-500">
-                        SVG, PNG, JPG or GIF (MAX. 800x400px)
-                      </p>
+                      ) : (
+                        <>
+                          <svg
+                            className="w-8 h-8 mb-4 text-gray-500"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 20 16"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                            />
+                          </svg>
+                          <p className="mb-2 text-sm text-gray-500">
+                            <span className="font-semibold">
+                              Click to upload
+                            </span>{" "}
+                            or drag and drop
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            SVG, PNG, JPG or GIF (MAX. 800x400px)
+                          </p>
+                        </>
+                      )}
                     </div>
-                    <input id="dropzone-file" type="file" class="hidden" />
+                    <input
+                      id="dropzone-file"
+                      type="file"
+                      className="hidden"
+                      onChange={handleImageUpload}
+                    />
                   </label>
                 </div>
               </div>
+            </div>
+            <div className="sm:col-span-2">
+              <label
+                htmlFor="description"
+                className="block mb-2 text-sm font-medium text-gray-900"
+              >
+                Description
+              </label>
+              <input
+                type="text"
+                name="description"
+                id="description"
+                className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 ${
+                  formik.touched.description && formik.errors.description
+                    ? "border-red-500"
+                    : ""
+                }`}
+                placeholder="Description goes here"
+                required
+                {...formik.getFieldProps("description")}
+              />
+              {formik.touched.description && formik.errors.description && (
+                <div className="text-red-500">{formik.errors.description}</div>
+              )}
             </div>
             <button
               type="submit"
