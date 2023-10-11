@@ -6,15 +6,16 @@ const categoryValidator = require("../validator/categoryValidator");
 
 router.get(
   "/",
-  categoryController.getAllCategories,
   authMiddleware.tokenValidator,
-  authMiddleware.adminValidator
+  authMiddleware.adminValidator,
+  categoryController.getAllCategories
 );
 router.post(
   "/",
   authMiddleware.tokenValidator,
   authMiddleware.adminValidator,
   categoryValidator.validateCategory,
+  categoryValidator.applyCategoryValidation,
   categoryController.addCategory
 );
 router.put(

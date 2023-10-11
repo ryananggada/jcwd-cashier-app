@@ -19,7 +19,7 @@ exports.addNewProduct = async (req, res) => {
       data: newProduct,
     });
   } catch (error) {
-    res.status(400).json({ ok: false, message: String(error) });
+    return res.status(400).json({ ok: false, message: String(error) });
   }
 };
 
@@ -42,8 +42,8 @@ exports.editProduct = async (req, res) => {
     product.isActive = isActive;
     await product.save();
 
-    res.json({ ok: true, data: product });
+    return res.json({ ok: true, data: product });
   } catch (error) {
-    res.status(400).json({ ok: false, message: String(error) });
+    return res.status(400).json({ ok: false, message: String(error) });
   }
 };
