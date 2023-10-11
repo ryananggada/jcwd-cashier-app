@@ -11,10 +11,18 @@ function Login() {
 
   const loginUser = async (username, password) => {
     try {
-      const response = await api.post("/auth/login", {
-        username,
-        password,
-      });
+      const response = await api.post(
+        "/auth/login",
+        {
+          username,
+          password,
+        },
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjk2OTI4MjAyLCJleHAiOjE2OTcwMTQ2MDJ9.1Oi9Q1_k-p3eOnhqJRLvX1e0aBvlhlmInyQxjfcIZu4`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         const userData = response.data;

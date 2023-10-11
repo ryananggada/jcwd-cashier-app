@@ -5,6 +5,7 @@ import { default as AdminProductList } from "./pages/product-list"
 import ProductCategoryList from "./pages/product-category-list"
 import CreateProduct from "./pages/CreateProduct";
 import CreateCashier from "./pages/CreateCashier";
+import CreateCategory from "./pages/CreateCategory";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/product-categories" element={<ProductCategoryList/>}/>
         <Route path="/create-product" element={<CreateProduct />} />
         <Route path="/create-cashier" element={<CreateCashier />} />
+        <Route path="/create-category" element={<CreateCategory />} />
       </Routes>
     </>
   );
