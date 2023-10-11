@@ -1,4 +1,5 @@
 import React from "react";
+import Cookies from "js-cookie";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -18,16 +19,22 @@ function Login() {
 
       if (response.status === 200) {
         const userData = response.data;
-        window.alert("Login success!");
-      } else {
-        // Handle failed login actions here
+        const token = userData.data.token;
+
+        // Cookies.set("token", token, { expires: 1 });
+        localStorage.setItem("token", token);
+
+        if (userData.data.role === "admin") {
+          navigate("/admin");
+        } else if (userData.data.role === "cashier") {
+          navigate("/cashier");
+        }
       }
     } catch (error) {
       window.alert("Login failed!");
       console.error("Error:", error);
     }
   };
-
   const loginSchema = yup.object().shape({
     username: yup
       .string()
