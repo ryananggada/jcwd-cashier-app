@@ -22,7 +22,6 @@ function App() {
         <Route path="/product-categories" element={<ProductCategoryList/>}/>
         <Route path="/create-product" element={<CreateProduct />} />
         <Route path="/create-cashier" element={<CreateCashier />} />
-        <Route path="/create-category" element={<CreateCategory />} />
       </Routes>
     </>
   );

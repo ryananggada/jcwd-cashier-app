@@ -1,73 +1,87 @@
 const { Category } = require("../models");
 
-exports.getAllCategories = async (req, res) => {
+
+exports.handleGetCategories = async (req, res) => {
   try {
-    const categories = await Category.findAll();
-    return res.json({ ok: true, data: categories });
-  } catch (error) {
-    return res.status(400).json({
-      ok: false,
-      message: String(error),
-    });
+      const categories = await Category.findAll({})
+      res.status(200).json({
+          ok: true,
+          data: categories
+      })
+  } catch(err) {
+      res.status(500).json({
+          ok: false,
+          message: err.message
+      })
   }
-};
+}
 
-exports.addCategory = async (req, res) => {
-  const { name, description } = req.body;
 
+exports.handleAddCategory = async (req, res) => {
+  const { name, description } = req.body
   try {
-    const category = await Category.create({
-      name: name,
-      description: description,
-    });
-    return res.json({ ok: true, data: category });
-  } catch (error) {
-    return res.status(400).json({
-      ok: false,
-      message: String(error),
-    });
+      const newCate = await Category.create({
+          name,
+          description
+      })
+      res.status(200).json({
+          ok: true,
+          data: newCate
+      })
+  } catch(err) {
+      res.status(500).json({
+          ok: false,
+          message: err.message
+      })
   }
-};
+}
 
-exports.editCategory = async (req, res) => {
-  const { name, description } = req.body;
-  const productId = req.params.id;
-
+exports.handleGetCategoryById = async(req, res) => {
+  const { id } = req.params
   try {
-    const category = await Category.findByOne({ where: { id: productId } });
-    if (!category) {
-      res.status(400).json({ ok: false, message: "Category not found" });
-      return;
-    }
-    category.name = name;
-    category.description = description;
-    await category.save();
-
-    return res.json({ ok: true, data: category });
-  } catch (error) {
-    return res.status(400).json({
-      ok: false,
-      message: String(error),
-    });
+      const category = await Category.findOne({
+          where: { id }
+      })
+      if (!category) {
+          return res.status(404).json({ ok: false, message: "Category not found" });
+      }
+  } catch(err){
+      res.status(500).json({ ok: false, message: err.message})
   }
-};
+}
 
-exports.deleteCategory = async (req, res) => {
-  const productId = req.params.id;
-
+exports.handleEditCategory = async (req, res) => {
+  const { id } = req.params
+  const { name, description } = req.body
   try {
-    const category = await Category.destroy({
-      where: { id: productId },
-    });
-    if (!category) {
-      res.status(400).json({ ok: false, message: "Category not found" });
-      return;
-    }
-    return res.json({ ok: true, data: category });
-  } catch (error) {
-    return res.status(400).json({
-      ok: false,
-      message: String(error),
-    });
+      const category = await Category.findOne({
+          where: { id }
+      })
+      if (!category) {
+          return res.status(404).json({ ok: false, message: "Category not found" });
+      }
+      category.name = name
+      category.description = description
+
+      await category.save()
+      res.status(200).json({
+          ok: true,
+          data: category,
+      })
+  } catch(err) {
+      res.status(500).json({
+          ok: false,
+          message: err.message
+      })
   }
-};
+}
+
+exports.handleDeleteCategory = async (req, res) => {
+  const { id } = req.params
+  try {
+      const category = await Category.destroy({ where: { id }})
+      res.status(200).json({ ok: true, data: category})
+  } catch(err) {
+      res.status(500).json({ ok: false, message: err.message})
+  }
+}

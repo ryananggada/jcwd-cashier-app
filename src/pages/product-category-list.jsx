@@ -13,7 +13,7 @@ function ProductCategoryList() {
     /*
     useEffect(() => {
         api
-            .get("/products/categories")
+            .get("/categories")
             .then((res) => {
                 setCategories(res.data)
             })
@@ -46,7 +46,7 @@ function ProductCategoryList() {
         window.alert(`testing reactivity of creating item with data {${name}, ${description}}`)
         /* 
         try {
-            const res = await api.post(`/products/categories`, {
+            const res = await api.post(`/categories`, {
                 name, 
                 description
             })
@@ -65,7 +65,7 @@ function ProductCategoryList() {
         window.alert(`testing reactivity of editing item with id '${id}' with data {${name}, ${description}}`)
         /* 
         try {
-            const res = await api.put(`/products/categories/${id}`, {
+            const res = await api.put(`/categories/${id}`, {
                 name,
                 description
             })
