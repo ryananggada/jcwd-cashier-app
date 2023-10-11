@@ -37,11 +37,24 @@ function ProductList() {
                 setProducts(res.data)
                 setProductAmount(res.itemAmount)
             })
-            .get
             .catch((err) => {
-                // Something has gone wrong.
+                window.alert("Failed to load product data")
+                console.log(err)
             })
     }, [ location ]) 
+    */
+    /*
+    useEffect(() => {
+        api
+            .get("/products/categories")
+            .then((res) => {
+                setCategories(res.data)
+            })
+            .catch((err) => {
+                window.alert("Failed to load category data")
+                console.log(err)
+            })
+    }, [])
     */
     /* 
     const fetchData = async () => {
@@ -50,8 +63,8 @@ function ProductList() {
             setProducts(res.data)
             setProductAmount(res.itemAmount)
         } catch(err) {
-            // Something has gone wrong.
-            // 5s
+            window.alert("Failed to load product data")
+            console.log(err)
         }
     } 
     */
