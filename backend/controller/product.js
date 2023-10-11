@@ -64,7 +64,7 @@ exports.handleGetProducts = async (req, res) => {
           itemAmount: count
       })
   } catch(err) {
-      res.status(500).json({
+      res.status(400).json({
           ok: false,
           message: err.message
       })
@@ -93,7 +93,7 @@ exports.handleGetProductsPage = async (req, res) => {
           itemAmount: count
       })
   } catch(err) {
-      res.status(500).json({
+      res.status(400).json({
           ok: false,
           message: err.message
       })
