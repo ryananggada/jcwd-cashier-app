@@ -27,7 +27,7 @@ function ProductCategoryList() {
             .max(100, "Category name cannot be longer than 100 characters"),
         description: yup
             .string()
-            .required("Description cannot be empty.")
+            .required("Category description cannot be empty.")
             .min(3, "Category description must be at least 3 characters")
             .max(100, "Category description cannot be longer than 100 characters")
     })
@@ -106,8 +106,8 @@ function ProductCategoryList() {
             {item.description}
             {(createCategoryForm.isValid 
             && ((item.name !== createCategoryForm.values.categoryName) || (item.description !== createCategoryForm.values.description)) 
-            && createCategoryForm.dirty) ? 
-            <button 
+            && createCategoryForm.dirty)
+            ? <button 
                 onClick={() => (editById(item.id, createCategoryForm.values.categoryName, createCategoryForm.values.description))}
             >Replace with submitted
             </button> 
@@ -130,7 +130,9 @@ function ProductCategoryList() {
                     placeholder="Name"
                     {...createCategoryForm.getFieldProps("categoryName")}
                 />
-                <div className="text-red-500">{createCategoryForm.errors.categoryName}</div>
+                {createCategoryForm.touched.categoryName
+                ?<div className="text-red-500">{createCategoryForm.errors.categoryName}</div>
+                :<></>}
                 <label
                     htmlFor="description"
                 >
@@ -143,7 +145,9 @@ function ProductCategoryList() {
                     placeholder="Description"
                     {...createCategoryForm.getFieldProps("description")}
                 />
-                <div className="text-red-500">{createCategoryForm.errors.description}</div>
+                {createCategoryForm.touched.description
+                ?<div className="text-red-500">{createCategoryForm.errors.description}</div>
+                :<></>}
                 <button 
                     type="submit"
                 >Create New</button>
