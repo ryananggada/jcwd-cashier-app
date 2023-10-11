@@ -6,29 +6,37 @@ const categoryValidator = require("../validator/categoryValidator");
 
 router.get(
   "/",
-  authMiddleware.tokenValidator,
-  authMiddleware.adminValidator,
-  categoryController.getAllCategories
+  categoryController.handleGetCategories
 );
+router.get(
+  "/:id",
+  categoryController.handleGetCategoryById
+)
 router.post(
   "/",
   authMiddleware.tokenValidator,
   authMiddleware.adminValidator,
   categoryValidator.validateCategory,
   categoryValidator.applyCategoryValidation,
-  categoryController.addCategory
+  categoryController.handleAddCategory
 );
 router.put(
   "/:id",
   authMiddleware.tokenValidator,
   authMiddleware.adminValidator,
-  categoryController.editCategory
+  categoryController.handleEditCategory
 );
+router.patch(
+  "/:id",
+  authMiddleware.tokenValidator,
+  authMiddleware.adminValidator,
+  categoryController.handleEditCategory
+)
 router.delete(
   "/:id",
   authMiddleware.tokenValidator,
   authMiddleware.adminValidator,
-  categoryController.deleteCategory
+  categoryController.handleDeleteCategory
 );
 
 module.exports = router;

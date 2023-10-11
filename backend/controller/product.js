@@ -1,4 +1,5 @@
-const Product = require("../models/product");
+const { Op } = require("sequelize");
+const { Product, sequelize } = require("../models");
 
 exports.addNewProduct = async (req, res) => {
   const { name, price, image, category, description } = req.body;
@@ -47,3 +48,64 @@ exports.editProduct = async (req, res) => {
     return res.status(400).json({ ok: false, message: String(error) });
   }
 };
+
+exports.handleGetProducts = async (req, res) => {
+  const { sortByPrice, sortAscend, category, nameFilter } = req.query
+  try {
+      const queryStruct = {}
+      if (!isNaN(category)){
+        queryStruct.categoryId = category
+      }
+      if (typeof nameFilter === "string"){
+        queryStruct.name = {[Op.substring] : nameFilter}
+      }
+      const products = await Product.findAll({
+          order: sequelize.literal(`${sortByPrice ? "price" : "name"} ${sortAscend ? "ASC" : "DESC"}`),
+          where: queryStruct
+      })
+      res.status(200).json({
+          ok: true,
+          data: products
+      })
+  } catch(err) {
+    console.log(err)
+      res.status(400).json({
+          ok: false,
+          message: err.message
+      })
+  }
+}
+
+exports.handleGetProductsPage = async (req, res) => {
+  const { page } = req.params
+  const { sortByPrice, sortAscend, category, nameFilter } = req.query
+  try {
+      if (isNaN(page)) {
+          throw "Page must be a number"
+      }
+      console.log(page)
+      const queryStruct = {}
+      if (!isNaN(category)){
+        queryStruct.categoryId = category
+      }
+      if (typeof nameFilter === "string"){
+        queryStruct.name = {[Op.substring] : nameFilter}
+      }
+      const products = await Product.findAll({
+          order: sequelize.literal(`${sortByPrice ? "price" : "name"} ${sortAscend ? "ASC" : "DESC"}`),
+          limit: 10,
+          offset: (10 * page),
+          where: queryStruct
+      })
+      res.status(200).json({
+          ok: true,
+          data: products
+      })
+  } catch(err) {
+      console.log(err)
+      res.status(400).json({
+          ok: false,
+          message: err.message
+      })
+  }
+}

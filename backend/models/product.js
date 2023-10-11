@@ -3,10 +3,10 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Product extends Model {
     static associate(models) {
-      // Product.belongsTo(models.category, {
-      //   foreignKey: "category",
-      //   as: "categoryData",
-      // });
+      Product.belongsTo(models.Category, {
+        foreignKey: "categoryId",
+        as: "categoryData",
+      });
     }
   }
   Product.init(
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       price: DataTypes.INTEGER,
       image: DataTypes.STRING,
-      category: DataTypes.STRING,
+      categoryId: DataTypes.INTEGER,
       description: DataTypes.STRING,
       isActive: DataTypes.BOOLEAN,
     },
