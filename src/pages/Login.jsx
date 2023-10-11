@@ -3,15 +3,14 @@ import Cookies from "js-cookie";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import api from "../api.js";
 
 function Login() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const loginUser = async (username, password) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await api.post(
         "/auth/login",
         {
@@ -20,7 +19,7 @@ function Login() {
         },
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjk2OTI4MjAyLCJleHAiOjE2OTcwMTQ2MDJ9.1Oi9Q1_k-p3eOnhqJRLvX1e0aBvlhlmInyQxjfcIZu4`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -29,7 +28,7 @@ function Login() {
         const userData = response.data;
         const token = userData.data.token;
 
-        // Cookies.set("token", token, { expires: 1 });
+        Cookies.set("token", token, { expires: 1 });
         localStorage.setItem("token", token);
 
         if (userData.data.role === "admin") {
