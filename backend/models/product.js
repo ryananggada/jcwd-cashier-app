@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class Product extends Model {
     static associate(models) {
       Product.belongsTo(models.Category, {
-        foreignKey: "category",
+        foreignKey: "categoryId",
         as: "categoryData",
       });
     }
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       price: DataTypes.INTEGER,
       image: DataTypes.STRING,
-      category: DataTypes.STRING,
+      categoryId: DataTypes.INTEGER,
       description: DataTypes.STRING,
       isActive: DataTypes.BOOLEAN,
     },

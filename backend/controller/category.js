@@ -12,6 +12,7 @@ exports.handleGetCategories = async (req, res) => {
       data: categories
     })
   } catch(err) {
+    console.log(String(err))
       res.status(400).json({
           ok: false,
           message: err.message
