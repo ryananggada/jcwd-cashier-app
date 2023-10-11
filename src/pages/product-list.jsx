@@ -27,7 +27,6 @@ function ProductList() {
         api
             .get(backendSearchUrl)
             .then((res) => {
-                console.log(res)
                 setProducts(res.data.data) // TOLONG
                 setProductAmount(res.data.data.length)
             })
@@ -35,19 +34,18 @@ function ProductList() {
                 window.alert("Failed to load product data")
                 console.log(err)
             })
-    }, []) 
+    }, [ location ]) 
     useEffect(() => {
         api
             .get("/categories")
             .then((res) => {
-                console.log(res)
                 setCategories(res.data.data)
             })
             .catch((err) => {
                 window.alert("Failed to load category data")
                 console.log(err)
             })
-    }, [])
+    }, [ location ])
     /* 
     const fetchData = async () => {
         try {

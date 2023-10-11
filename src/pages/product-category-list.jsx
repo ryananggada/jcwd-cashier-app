@@ -1,34 +1,35 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import * as yup from "yup"
-//import api from "../api"
+import api from "../api"
 import { useFormik } from "formik"
 
 function ProductCategoryList() {
 
-    const [categories, setCategories] = useState([{
-        id: 1,
-        name: "nom",
-        description: "nom"
-    }])
-    /*
+    const [categories, setCategories] = useState([])
+
     useEffect(() => {
         api
             .get("/categories")
             .then((res) => {
-                setCategories(res.data)
+                setCategories(res.data.data)
             })
             .catch((err) => {
                 window.alert("Failed to load category data")
                 console.log(err)
             })
     }, [])
-    */
+
     const createCategorySchema = yup.object().shape({
         categoryName: yup
             .string()
-            .required("Name cannot be empty.")
-            .min(1),
-        description: yup.string()
+            .required("Category name cannot be empty.")
+            .min(3, "Category name must be at least 3 characters")
+            .max(100, "Category name cannot be longer than 100 characters"),
+        description: yup
+            .string()
+            .required("Description cannot be empty.")
+            .min(3, "Category description must be at least 3 characters")
+            .max(100, "Category description cannot be longer than 100 characters")
     })
     
     const createCategoryForm = useFormik({
@@ -100,9 +101,12 @@ function ProductCategoryList() {
 
         <div>
             {categories.map(item => (<>
+            <div key={item.id}>Category</div>
             {item.name}
             {item.description}
-            {(createCategoryForm.isValid && createCategoryForm.dirty) ? 
+            {(createCategoryForm.isValid 
+            && ((item.name !== createCategoryForm.values.categoryName) || (item.description !== createCategoryForm.values.description)) 
+            && createCategoryForm.dirty) ? 
             <button 
                 onClick={() => (editById(item.id, createCategoryForm.values.categoryName, createCategoryForm.values.description))}
             >Replace with submitted
@@ -115,7 +119,7 @@ function ProductCategoryList() {
             </div>
             <form onSubmit={createCategoryForm.handleSubmit}>
                 <label
-                    for="name"
+                    htmlFor="name"
                 >
                     Category name
                 </label>
@@ -128,7 +132,7 @@ function ProductCategoryList() {
                 />
                 <div className="text-red-500">{createCategoryForm.errors.categoryName}</div>
                 <label
-                    for="description"
+                    htmlFor="description"
                 >
                     Category description                    
                 </label>
@@ -139,6 +143,7 @@ function ProductCategoryList() {
                     placeholder="Description"
                     {...createCategoryForm.getFieldProps("description")}
                 />
+                <div className="text-red-500">{createCategoryForm.errors.description}</div>
                 <button 
                     type="submit"
                 >Create New</button>
