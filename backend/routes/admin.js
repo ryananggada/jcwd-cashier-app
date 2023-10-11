@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const authMiddleware = require("../middleware/auth");
 const authValidator = require("../validator/authValidator");
-const cashierController = require("../controller/cashier");
+const adminController = require("../controller/admin");
 
 router.post(
   "/new_cashier",
@@ -9,21 +9,21 @@ router.post(
   authMiddleware.adminValidator,
   authValidator.registerChecker,
   authValidator.registerValidator,
-  cashierController.createNewCashier
+  adminController.createNewCashier
 );
 
 router.delete(
   "/delete_cashier/:username",
   authMiddleware.tokenValidator,
   authMiddleware.adminValidator,
-  cashierController.deleteCashier
+  adminController.deleteCashier
 );
 
 router.patch(
   "/cashier_toggler/:username",
   authMiddleware.tokenValidator,
   authMiddleware.adminValidator,
-  cashierController.toggleCashierStatus
+  adminController.toggleCashierStatus
 );
 
 module.exports = router;
