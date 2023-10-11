@@ -6,14 +6,10 @@ const categoryValidator = require("../validator/categoryValidator");
 
 router.get(
   "/",
-  authMiddleware.tokenValidator,
-  authMiddleware.adminValidator,
   categoryController.handleGetCategories
 );
 router.get(
   "/:id",
-  authMiddleware.tokenValidator,
-  authMiddleware.adminValidator,
   categoryController.handleGetCategoryById
 )
 router.post(
