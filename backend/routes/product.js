@@ -4,14 +4,10 @@ const productController = require("../controller/product");
 
 router.get(
   "/",
-  authMiddleware.tokenValidator,
-  authMiddleware.adminValidator,
   productController.handleGetProducts
 )
 router.get(
   "/:page",
-  authMiddleware.tokenValidator,
-  authMiddleware.adminValidator,
   productController.handleGetProductsPage
 )
 router.post(
