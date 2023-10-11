@@ -3,9 +3,9 @@ const { Category } = require("../models");
 exports.getAllCategories = async (req, res) => {
   try {
     const categories = await Category.findAll();
-    res.json({ ok: true, data: categories });
+    return res.json({ ok: true, data: categories });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       ok: false,
       message: String(error),
     });
@@ -20,9 +20,9 @@ exports.addCategory = async (req, res) => {
       name: name,
       description: description,
     });
-    res.json({ ok: true, data: category });
+    return res.json({ ok: true, data: category });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       ok: false,
       message: String(error),
     });
@@ -45,7 +45,7 @@ exports.editCategory = async (req, res) => {
 
     return res.json({ ok: true, data: category });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       ok: false,
       message: String(error),
     });
@@ -65,7 +65,7 @@ exports.deleteCategory = async (req, res) => {
     }
     return res.json({ ok: true, data: category });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       ok: false,
       message: String(error),
     });
