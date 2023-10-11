@@ -34,7 +34,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-export const PORT = 8000;
+const PORT = 8000;
 app.listen(PORT, () => {
   console.log(`Cashier app server runs at http://localhost:${PORT}`);
 });
