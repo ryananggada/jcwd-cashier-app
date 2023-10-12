@@ -114,20 +114,23 @@ function ProductCategoryList() {
     return (<>
 
         <div>
-            {categories.map(item => (<>
-            <div key={item.id}>Category</div>
-            {item.name}
-            {item.description}
-            {(createCategoryForm.isValid 
-            && ((item.name !== createCategoryForm.values.categoryName) || (item.description !== createCategoryForm.values.description)) 
-            && createCategoryForm.dirty)
-            ? <button 
-                onClick={() => (editById(item.id, createCategoryForm.values.categoryName, createCategoryForm.values.description))}
-            >Replace with submitted
-            </button> 
-            : <></>}
-            <button onClick={() => (deleteById(item.id))}>Delete</button>
-            </>))}
+            {categories.map(item => (
+            <div key={item.id}>
+                <div>Category</div>
+                {item.name}
+                {item.description}
+                {(createCategoryForm.isValid 
+                    && ((item.name !== createCategoryForm.values.categoryName) 
+                    || (item.description !== createCategoryForm.values.description)) 
+                    && createCategoryForm.dirty)
+                ? <button 
+                    onClick={() => (editById(item.id, createCategoryForm.values.categoryName, createCategoryForm.values.description))}
+                >
+                    Replace with submitted
+                </button> 
+                : <></>}
+                <button onClick={() => (deleteById(item.id))}>Delete</button>
+            </div>))}
             <div>
                 Product Category submission
             </div>
