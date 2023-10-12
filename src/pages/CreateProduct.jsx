@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import Dashboard from "../components/Dashboard";
@@ -6,9 +6,21 @@ import api from "../api";
 
 function CreateProduct() {
   const [uploadedImage, setUploadedImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await api.get("/categories");
+      setCategories(response.data.data);
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
+    setImageUrl(file);
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -25,6 +37,11 @@ function CreateProduct() {
     image,
     description
   ) => {
+    if (uploadedImage === null) {
+      window.alert("Image is required!");
+      return;
+    }
+
     try {
       const response = await api.post(
         "/products",
@@ -38,7 +55,8 @@ function CreateProduct() {
         {
           headers: {
             Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwidXNlck5hbWUiOiJSeWFuIiwiaWF0IjoxNjk3MDAzNTgzLCJleHAiOjE2OTcwODk5ODN9.ll9kcx-QJAwnDJkKC6OL_7XXa3EfbVAWNENTrrGzZ-o",
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwidXNlck5hbWUiOiJSeWFuIiwiaWF0IjoxNjk3MDc5ODAzLCJleHAiOjE2OTcxNjYyMDN9.DR4lrx1YC8SzapD0gtGn3Vjq6yHb2fzb_4STZ7hqsPE",
+            "Content-Type": "multipart/form-data",
           },
         }
       );
@@ -78,13 +96,12 @@ function CreateProduct() {
     },
     validationSchema: productSchema,
     onSubmit: (values) => {
-      console.log("asdasd");
       const { name, price, category, description } = values;
       handleAddProduct(
         name,
         parseInt(price, 10),
         category,
-        uploadedImage.slice(0, 50),
+        imageUrl,
         description
       );
     },
@@ -161,8 +178,11 @@ function CreateProduct() {
                   {...formik.getFieldProps("category")}
                 >
                   <option value=""></option>
-                  <option value="Food">Food</option>
-                  <option value="Drink">Drink</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
                 </select>
                 {formik.touched.category && formik.errors.category && (
                   <div className="text-red-500">{formik.errors.category}</div>
