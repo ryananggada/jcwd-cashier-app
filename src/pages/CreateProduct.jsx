@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import Dashboard from "../components/Dashboard";
@@ -7,9 +7,21 @@ import Cookies from "js-cookie";
 
 function CreateProduct() {
   const [uploadedImage, setUploadedImage] = useState(null);
-  const [categories, setCategories] = useState([])
+  const [imageUrl, setImageUrl] = useState(null);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await api.get("/categories");
+      setCategories(response.data.data);
+    };
+
+    fetchCategories();
+  }, []);
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
+    setImageUrl(file);
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -95,23 +107,11 @@ function CreateProduct() {
         name,
         parseInt(price, 10),
         categoryId,
-        typeof uploadedImage === "string" ? uploadedImage.slice(0, 50) : uploadedImage,
+        imageUrl,
         description
       );
     },
   });
-
-  useEffect(() => {
-    api
-        .get("/categories")
-        .then((res) => {
-            setCategories(res.data.data)
-        })
-        .catch((err) => {
-            window.alert("Failed to load category data")
-            console.log(err)
-        })
-  }, [])
 
   return (
     <Dashboard>
