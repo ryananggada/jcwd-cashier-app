@@ -3,7 +3,8 @@ const { Product, Category, sequelize } = require("../models");
 
 exports.addNewProduct = async (req, res) => {
   const { name, price, category, description } = req.body;
-  const filename = req.file.filename;
+  const filename = req.file ? req.file.filename : null;
+
 
   try {
     /*
@@ -75,7 +76,7 @@ exports.handleGetProducts = async (req, res) => {
     if (typeof nameFilter === "string") {
       queryStruct.name = { [Op.substring]: nameFilter };
     }
-    const products = await Product.findAll({
+    const  products = await Product.findAll({
       order: sequelize.literal(
         `${sortByPrice ? "price" : "name"} ${sortAscend ? "ASC" : "DESC"}`
       ),
@@ -101,7 +102,6 @@ exports.handleGetProductsPage = async (req, res) => {
     if (isNaN(page)) {
       throw "Page must be a number";
     }
-    console.log(page);
     const queryStruct = {};
     if (!isNaN(category)) {
       queryStruct.categoryId = category;
@@ -109,7 +109,7 @@ exports.handleGetProductsPage = async (req, res) => {
     if (typeof nameFilter === "string") {
       queryStruct.name = { [Op.substring]: nameFilter };
     }
-    const products = await Product.findAll({
+    const { count, rows } = await Product.findAndCountAll({
       order: sequelize.literal(
         `${sortByPrice ? "price" : "name"} ${sortAscend ? "ASC" : "DESC"}`
       ),
@@ -117,9 +117,11 @@ exports.handleGetProductsPage = async (req, res) => {
       offset: 10 * page,
       where: queryStruct,
     });
+    console.log(count)
     res.status(200).json({
       ok: true,
-      data: products,
+      data: rows,
+      amount: count,
     });
   } catch (err) {
     console.log(err);
