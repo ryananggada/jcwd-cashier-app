@@ -7,8 +7,8 @@ router.post("/login", authController.loginHandler);
 
 router.post(
   "/updateprofile",
-  authMiddleware.tokenValidator,
   multerUpload.single("profilePicture"),
+  authMiddleware.tokenValidator,
   authController.updateProfilePicture
 );
 

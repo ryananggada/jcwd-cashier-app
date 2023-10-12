@@ -12,10 +12,10 @@ import CreateCategory from "./pages/CreateCategory";
 function App() {
   return (
     <>
-      <Link to="/">Go home </Link>
+      {/* <Link to="/">Go home </Link>
       <Link to="/login">Login </Link>
       <Link to="/products/0">products</Link>
-      <Link to="/product-categories">product categories</Link>
+      <Link to="/product-categories">product categories</Link> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
