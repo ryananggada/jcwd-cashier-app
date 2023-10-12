@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import Dashboard from "../components/Dashboard";
 import api from "../api";
+import Cookies from "js-cookie";
 
 function CreateProduct() {
   const [uploadedImage, setUploadedImage] = useState(null);
-
+  const [categories, setCategories] = useState([])
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -21,24 +22,33 @@ function CreateProduct() {
   const handleAddProduct = async (
     name,
     price,
-    category,
+    categoryId,
     image,
     description
   ) => {
+    console.log({
+      name,
+      price,
+      categoryId,
+      image,
+      description,
+    })
+    
     try {
       const response = await api.post(
         "/products",
         {
           name,
           price,
-          category,
+          categoryId,
           image,
           description,
         },
         {
           headers: {
             Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwidXNlck5hbWUiOiJSeWFuIiwiaWF0IjoxNjk3MDAzNTgzLCJleHAiOjE2OTcwODk5ODN9.ll9kcx-QJAwnDJkKC6OL_7XXa3EfbVAWNENTrrGzZ-o",
+              `Bearer ${Cookies.get("token")}`,
+            "Content-Type": "multipart/form-data"
           },
         }
       );
@@ -50,6 +60,7 @@ function CreateProduct() {
       window.alert("Something went wrong:", error);
       console.log(error);
     }
+    
   };
 
   const productSchema = yup.object().shape({
@@ -61,7 +72,7 @@ function CreateProduct() {
       .number()
       .positive("Price cannot be negative or zero")
       .required("Price cannot be empty"),
-    category: yup.string().required("Category cannot be empty"),
+    categoryId: yup.number().integer(),
     //image: yup.string().required("Image is required"),
     description: yup
       .string()
@@ -73,22 +84,34 @@ function CreateProduct() {
     initialValues: {
       name: "",
       price: 0,
-      category: "",
+      categoryId: 1,
       description: "",
     },
     validationSchema: productSchema,
     onSubmit: (values) => {
       console.log("asdasd");
-      const { name, price, category, description } = values;
+      const { name, price, categoryId, description } = values;
       handleAddProduct(
         name,
         parseInt(price, 10),
-        category,
-        uploadedImage.slice(0, 50),
+        categoryId,
+        typeof uploadedImage === "string" ? uploadedImage.slice(0, 50) : uploadedImage,
         description
       );
     },
   });
+
+  useEffect(() => {
+    api
+        .get("/categories")
+        .then((res) => {
+            setCategories(res.data.data)
+        })
+        .catch((err) => {
+            window.alert("Failed to load category data")
+            console.log(err)
+        })
+  }, [])
 
   return (
     <Dashboard>
@@ -158,11 +181,11 @@ function CreateProduct() {
                 <select
                   id="category"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-500 block w-full p-2.5"
-                  {...formik.getFieldProps("category")}
+                  {...formik.getFieldProps("categoryId")}
                 >
-                  <option value=""></option>
-                  <option value="Food">Food</option>
-                  <option value="Drink">Drink</option>
+                  {categories.map(cate => (
+                    <option key={cate.id} value={cate.id}>{cate.name}</option>
+                  ))}
                 </select>
                 {formik.touched.category && formik.errors.category && (
                   <div className="text-red-500">{formik.errors.category}</div>

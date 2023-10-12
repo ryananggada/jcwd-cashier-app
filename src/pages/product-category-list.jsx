@@ -2,10 +2,15 @@ import { useEffect, useState } from "react"
 import * as yup from "yup"
 import api from "../api"
 import { useFormik } from "formik"
+import Cookies from "js-cookie"
 
 function ProductCategoryList() {
 
-    const [categories, setCategories] = useState([])
+    const [categories, setCategories] = useState([{
+        id: 1,
+        name: "nom",
+        description: "nom"
+    }])
 
     useEffect(() => {
         api
@@ -44,58 +49,67 @@ function ProductCategoryList() {
         }
     })
     const createNewCategory = async(name, description) => {
-        window.alert(`testing reactivity of creating item with data {${name}, ${description}}`)
-        /* 
         try {
             const res = await api.post(`/categories`, {
                 name, 
                 description
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get("token")}`
+                }
             })
             if (res.status !== 200){
-                window.alert("Failed to add category")
-            } else {
-                window.alert("Successfully added category")
+                throw new Error(res.data)
             }
+            setCategories(categories.concat(res.data.data))
+            window.alert("Successfully added category")
         } catch(err) {
             window.alert("Failed to add category")
             console.log(err)
-        } 
-        */
+        }
     }
     const editById = async(id, name, description) => {
-        window.alert(`testing reactivity of editing item with id '${id}' with data {${name}, ${description}}`)
-        /* 
         try {
             const res = await api.put(`/categories/${id}`, {
                 name,
                 description
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get("token")}`
+                }
             })
             if (res.status !== 200){
-                window.alert("Failed to edit category")
-            } else {
-                window.alert("Successfully edited category")
+                throw new Error(res.data)
             }
+            const cateIndex = categories.findIndex(item => item.id === id)
+            const cateCopy = [...categories]
+            cateCopy.splice(cateIndex, 1, res.data.data)
+            setCategories(cateCopy)
+            window.alert("Successfully edited category")
         } catch(err) {
             window.alert("Failed to edit category")
             console.log(err)
         } 
-        */
     }
     const deleteById = async(id) => {
-        window.alert(`testing reactivity of deleting item with id '${id}'`)
-        /* 
         try {
-            const res = await api.delete(`/products/categories/${id}`)
+            const res = await api.delete(`/categories/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get("token")}`
+                }
+            }) 
             if (res.status !== 200) {
-                window.alert("Failed to delete category")
-            } else {
-                window.alert("Successfully deleted category")
+                throw new Error(res.data)
             }
+            setCategories(categories.filter(item => item.id !== id))
+            window.alert("Successfully deleted category")
         } catch(err) {
             window.alert("Failed to delete category")
             console.log(err)
-        } 
-        */
+        }
     }
     return (<>
 
