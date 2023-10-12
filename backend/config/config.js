@@ -1,4 +1,5 @@
-require("dotenv").config();
+const path = require('path')
+require("dotenv").config({path: path.resolve('backend', '.env')});
 module.exports = {
   development: {
     username: process.env.DB_USER,
