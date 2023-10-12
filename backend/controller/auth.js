@@ -57,5 +57,9 @@ exports.updateProfilePicture = async (req, res) => {
   user.profilePicture = profilePicture;
   await user.save();
 
-  res.json({ ok: true, data: user });
+  res.json({
+    ok: true,
+    data: user.profilePicture,
+    message: "Profile Picture Successfully Uploaded",
+  });
 };
