@@ -8,7 +8,7 @@ import CashierMenu from "./pages/CashierMenu";
 import CreateProduct from "./pages/CreateProduct";
 import CreateCashier from "./pages/CreateCashier";
 import CreateCategory from "./pages/CreateCategory";
-import UserSetting from "./pages/UserSettings";
+//import UserSetting from "./pages/UserSettings";
 import CashierControlPanel from "./pages/CashierControlPanel";
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
         <Route path="/create-category" element={<CreateCategory />} />
         <Route path="/admin" element={<AdminMenu />} />
         <Route path="/cashier" element={<CashierMenu />} />
-        <Route path="/user-setting" element={<UserSetting />} />
+        {/*<Route path="/user-setting" element={<UserSetting />} />*/}
         <Route path="/cashier-panel" element={<CashierControlPanel />} />
       </Routes>
     </>

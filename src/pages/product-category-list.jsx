@@ -3,14 +3,14 @@ import * as yup from "yup"
 import api from "../api"
 import { useFormik } from "formik"
 import Cookies from "js-cookie"
+import Dashboard from "../components/Dashboard"
+import { GiTrashCan } from "react-icons/gi"
+
+
 
 function ProductCategoryList() {
 
-    const [categories, setCategories] = useState([{
-        id: 1,
-        name: "nom",
-        description: "nom"
-    }])
+    const [categories, setCategories] = useState([{}])
 
     useEffect(() => {
         api
@@ -59,7 +59,7 @@ function ProductCategoryList() {
                     Authorization: `Bearer ${Cookies.get("token")}`
                 }
             })
-            if (res.status !== 200){
+            if ((res.status !== 200) || (res.status !== 201)){
                 throw new Error(res.data)
             }
             setCategories(categories.concat(res.data.data))
@@ -112,64 +112,88 @@ function ProductCategoryList() {
         }
     }
     return (<>
-
-        <div>
-            {categories.map(item => (
-            <div key={item.id}>
-                <div>Category</div>
-                {item.name}
-                {item.description}
-                {(createCategoryForm.isValid 
-                    && ((item.name !== createCategoryForm.values.categoryName) 
-                    || (item.description !== createCategoryForm.values.description)) 
-                    && createCategoryForm.dirty)
-                ? <button 
-                    onClick={() => (editById(item.id, createCategoryForm.values.categoryName, createCategoryForm.values.description))}
+    <Dashboard>
+        <section className ="py-8 px-4 mx-auto max-w-2xl lg:py-16"> <div>
+            <h3>
+                Categories
+            </h3>
+            <div  
+                className="grid gap-1.5 sm:grid-cols-3 sm:gap-2.5"
+            >
+                {categories.map(item => (
+                <div
+                    className="grid gap-1.5 grid-cols-2 sm:grid-cols-6 sm:gap-2 border-x-2 border-y-2 rounded-lg border-gray-100"
+                    key={item.id}
                 >
-                    Replace with submitted
-                </button> 
-                : <></>}
-                <button onClick={() => (deleteById(item.id))}>Delete</button>
-            </div>))}
-            <div>
-                Product Category submission
+                    <div className="text-center col-span-2 sm:text-right sm:col-span-3">{item.name}</div>
+                    <div
+                        className="text-gray-600 text-center col-span-2 sm:text-left sm:col-span-3"
+                    >{item.description}</div>
+                    <button 
+                        className="items-center px-1 py-1 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-800 disabled:bg-gray-900 sm:col-span-4"
+                        onClick={() => (editById(item.id, createCategoryForm.values.categoryName, createCategoryForm.values.description))}
+                        disabled={!(createCategoryForm.isValid 
+                            && ((item.name !== createCategoryForm.values.categoryName) 
+                            || (item.description !== createCategoryForm.values.description)) 
+                            && createCategoryForm.dirty
+                        )}
+                    >
+                        Replace
+                    </button>
+                    <button 
+                        className="items-center px-1 py-1 text-sm border-x-2 border-y-2 border-red-500 font-medium text-center rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-red-100 hover:border-red-700 sm:col-span-2"
+                        onClick={() => (deleteById(item.id))}
+                    ><GiTrashCan className="fill-red-500 mx-auto"/></button>
+                </div>))}
             </div>
-            <form onSubmit={createCategoryForm.handleSubmit}>
-                <label
-                    htmlFor="name"
+            <form 
+                onSubmit={createCategoryForm.handleSubmit}
+            >
+                Submit product category data
+                <div
+                    className="grid gap-4 sm:grid-cols-2 sm:gap-6"
                 >
-                    Category name
-                </label>
-                <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    placeholder="Name"
-                    {...createCategoryForm.getFieldProps("categoryName")}
-                />
-                {createCategoryForm.touched.categoryName
-                ?<div className="text-red-500">{createCategoryForm.errors.categoryName}</div>
-                :<></>}
-                <label
-                    htmlFor="description"
-                >
-                    Category description                    
-                </label>
-                <input
-                    type="text"
-                    name="description"
-                    id="description"
-                    placeholder="Description"
-                    {...createCategoryForm.getFieldProps("description")}
-                />
-                {createCategoryForm.touched.description
-                ?<div className="text-red-500">{createCategoryForm.errors.description}</div>
-                :<></>}
+                    <label>
+                        Category name:
+                        <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            placeholder="Name"
+                            className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 ${
+                                createCategoryForm.touched.name && createCategoryForm.errors.name
+                                ? "border-red-500"
+                                : ""
+                            }`}
+                            {...createCategoryForm.getFieldProps("categoryName")}
+                        />
+                        <div className="text-red-500">{createCategoryForm.touched.name? createCategoryForm.errors.categoryName:""}</div>
+                    </label>
+                    <label>
+                        Category description:                 
+                        <input
+                            type="text"
+                            name="description"
+                            id="description"
+                            placeholder="Description"
+                            className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 ${
+                                createCategoryForm.touched.description && createCategoryForm.errors.description
+                                ? "border-red-500"
+                                : ""
+                            }`}
+                            {...createCategoryForm.getFieldProps("description")}
+                        />
+                        <div className="text-red-500">{createCategoryForm.touched.description? createCategoryForm.errors.description:""}</div>
+                    </label>
+                </div>
                 <button 
+                    className="inline-flex items-center px-5 py-2.5 mt-4 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-800 disabled:bg-gray-900"
                     type="submit"
+                    disabled={!(createCategoryForm.isValid && createCategoryForm.dirty)}
                 >Create New</button>
             </form>
-        </div>
+        </div> </section>
+    </Dashboard>
     </>)
 }
 

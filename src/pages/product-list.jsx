@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react"
 import * as yup from "yup"
 import api from "../api"
-import { useLocation, useParams, useSearchParams, redirect } from "react-router-dom"
+import { useParams, useSearchParams, redirect } from "react-router-dom"
 import { isEmptyArray, useFormik } from "formik"
+import { BsSearch } from "react-icons/bs"
+import Dashboard from "../components/Dashboard"
 
 // TO DO: Ubah page indexing dari 0 ke 1
 function ProductList() {
     const { page } = useParams();
-    const location = useLocation();
     const [products, setProducts] = useState([])
     const [productAmount, setProductAmount] = useState(0)
     const [availablePages, setAvailablePages] = useState(0)
@@ -17,7 +18,7 @@ function ProductList() {
         if (isNaN(page) || (page % 1 !== 0)) {
             redirect(`/products/0?${searchParams.toString()}`)
         }
-    }, [ location ])
+    }, [ page ])
     useEffect(() => {
         setAvailablePages(Math.ceil(productAmount / 10) - 1)
     }, [ productAmount ])
@@ -44,7 +45,7 @@ function ProductList() {
                 window.alert("Failed to load product data")
                 console.log(err)
             })
-    }, [ location ]) 
+    }, [ page, searchParams ]) 
     useEffect(() => {
         api
             .get("/categories")
@@ -55,7 +56,7 @@ function ProductList() {
                 window.alert("Failed to load category data")
                 console.log(err)
             })
-    }, [ location ])
+    }, [ page, searchParams ])
     /* 
     const fetchData = async () => {
         try {
@@ -72,48 +73,79 @@ function ProductList() {
     const 
     */
 
-    return (<>
-        <div>
+    return (    
+    <Dashboard>
+        <div className ="pt-10 pb-2 px-4 mx-auto max-w-2xl lg:pt-16">
             <form action="">
-                Looking for something?
-                <input type="text" name="nameFilter" placeholder="Product Name"/>
-                <label>
-                    Product Category:
-                    <select name="category">
-                        <option></option>
+                <div className="grid grid-cols-3 sm:grid-cols-2" >
+                    <input
+                        type="text" 
+                        name="nameFilter" 
+                        placeholder="Product Name"
+                        className="m-0 py-px rounded-l-full col-span-2 sm:col-span-1"
+                    />
+                    <select 
+                        className="m-0 py-px rounded-r-full"
+                        name="category"
+                    >
+                        <option
+                            className="text-gray-300"
+                        >Category...</option>
                         {categories.map(cate => (
                             <option key={cate.id} value={cate.id}>{cate.name}</option>
                         ))}
                     </select>
-                </label>
-                <input type="radio" name="sortByPrice" value="0"/> Sort by name
-                <input type="radio" name="sortByPrice" value="1"/> Sort by price
-                <input type="radio" name="sortAscend" value="0"/> {searchParams.get("sortByPrice") ? "Highest to Lowest price" : "z-A"}
-                <input type="radio" name="sortAscend" value="1"/> {searchParams.get("sortByPrice") ? "Lowest to highest price" : "A-z"}
-                <button type="submit">Search</button>
+                </div>
+                Sort by {/*Date of creation <input type="radio" name="sortType" value="createdAt"/> */}
+                Name <input type="radio" name="sortType" value="name"/>
+                Price <input type="radio" name="sortType" value="price"/>
+                Descending <input type="radio" name="sortAscend" value="0"/>
+                Ascending<input type="radio" name="sortAscend" value="1"/>
+                <button 
+                    className="items-center p-1 border-2 border-green-300 rounded-full hover:border-green-500 hover:bg-green-100"
+                    type="submit"
+                ><BsSearch/></button>
             </form>
-            <section>
+            <section
+                className="grid gap-1.5 sm:grid-cols-2"
+            >
                 {isEmptyArray(products)
                     ? "No items found."
                     : /** Karena sudah disort, tinggal map saja hasil itemnya. */
                     products.map(item => (
-                        <div key={item.id}>
-                            <div>
+                        <div 
+                            className="grid gap-1.5 sm:grid-cols-2 border border-green-400 rounded-sm"
+                            key={item.id}
+                        >
+                            <img src={item.image} alt="" className="col-span-2"/>
+                            <div
+                                className="text-xl font-bold"
+                            >
                                 Price: {item.price}
                             </div>
-                            <div>
+                            <div
+                                className="text-lg font-semibold"
+                            >
                                 Name: {item.name}
                             </div>
-                            <img src={item.image} alt=""/*onError={displayBlankObject}*//>
-                            <div>   
+                            <div>
                                 Category:
-                                {categories.find(cate => cate.id === item.categoryId)?categories.find(cate => cate.id === item.categoryId).name : ""}
+                                <div className="grid gap-0.5 sm:grid-cols-2">
+                                    <div>
+                                        {categories.find(cate => cate.id === item.categoryId)?categories.find(cate => cate.id === item.categoryId).name : ""}
+                                    </div>
+                                    <div
+                                        className="text-gray-600"
+                                    >
+                                        {categories.find(cate => cate.id === item.categoryId)?categories.find(cate => cate.id === item.categoryId).description : ""}
+                                </div>
+                                </div>
                             </div>
                             <div>
                                 Description: {item.description}
                             </div>
                             <label>
-                                Active:
+                                Active: 
                                 <input
                                     type="checkbox"
                                     name={`activeId${item.id}`}
@@ -126,7 +158,7 @@ function ProductList() {
                 {}
             </section>
         </div>
-            <div> Page {page} of {availablePages} </div>
+        <div> Page {page} of {availablePages} </div>
             <form onSubmit={pageNavForm.submitForm}>
                 <label>
                     Go to:
@@ -134,15 +166,16 @@ function ProductList() {
                         type="number"
                         name="to"
                         value={page}
+                        className="py-px rounded-full"
                         min={0}
                         max={availablePages}
+                        maxLength={Math.max(Math.ceil(Math.log10(availablePages)), 1)}
+                        size={Math.max(Math.ceil(Math.log10(availablePages) + 1), 2)}
                         {...pageNavForm.getFieldProps("to")}
                     />
                 </label>
             </form>
-
-        </>
-    )
+    </Dashboard>)
 }
 
 export default ProductList

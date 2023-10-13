@@ -67,18 +67,19 @@ exports.editProduct = async (req, res) => {
 };
 
 exports.handleGetProducts = async (req, res) => {
-  const { sortByPrice, sortAscend, category, nameFilter } = req.query;
+  const { sortType, sortAscend, category, nameFilter } = req.query;
   try {
     const queryStruct = {};
     if (!isNaN(category)) {
       queryStruct.categoryId = category;
     }
+    
     if (typeof nameFilter === "string") {
       queryStruct.name = { [Op.substring]: nameFilter };
     }
     const  products = await Product.findAll({
       order: sequelize.literal(
-        `${sortByPrice ? "price" : "name"} ${sortAscend ? "ASC" : "DESC"}`
+        `${["id", "name", "price", "createdAt"].includes(sortType)? sortType:"createdAt"} ${sortAscend ? "ASC" : "DESC"}`
       ),
       where: queryStruct,
     });
@@ -97,7 +98,7 @@ exports.handleGetProducts = async (req, res) => {
 
 exports.handleGetProductsPage = async (req, res) => {
   const { page } = req.params;
-  const { sortByPrice, sortAscend, category, nameFilter } = req.query;
+  const { sortType, sortAscend, category, nameFilter } = req.query;
   try {
     if (isNaN(page)) {
       throw "Page must be a number";
@@ -111,7 +112,7 @@ exports.handleGetProductsPage = async (req, res) => {
     }
     const { count, rows } = await Product.findAndCountAll({
       order: sequelize.literal(
-        `${sortByPrice ? "price" : "name"} ${sortAscend ? "ASC" : "DESC"}`
+        `${["id", "name", "price", "createdAt"].includes(sortType)? sortType:"createdAt"} ${sortAscend ? "ASC" : "DESC"}`
       ),
       limit: 10,
       offset: 10 * page,
