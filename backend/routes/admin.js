@@ -26,4 +26,11 @@ router.patch(
   adminController.toggleCashierStatus
 );
 
+router.get(
+  "/cashiers",
+  authMiddleware.tokenValidator,
+  authMiddleware.adminValidator,
+  adminController.getAllCashiers
+);
+
 module.exports = router;

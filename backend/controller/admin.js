@@ -82,7 +82,7 @@ exports.toggleCashierStatus = async (req, res, next) => {
 exports.getAllCashiers = async (req, res, next) => {
   const cashiers = await User.findAll({
     where: { role: "cashier" },
-    attributes: ["username", "name", "isActive"],
+    attributes: ["username", "name", "email", "isActive"],
   });
 
   return res.json({
@@ -95,7 +95,7 @@ exports.getCashier = async (req, res, next) => {
   const { username } = req.params;
   const cashier = await User.findOne({
     where: { username, role: "cashier" },
-    attributes: ["username", "name", "isActive"],
+    attributes: ["username", "name", "email", "isActive"],
   });
 
   if (!cashier) {

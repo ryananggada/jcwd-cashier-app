@@ -20,6 +20,9 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
+      email: {
+        type: Sequelize.STRING,
+      },
       profilePicture: {
         type: Sequelize.STRING,
       },

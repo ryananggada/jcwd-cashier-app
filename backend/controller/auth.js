@@ -43,23 +43,3 @@ exports.loginHandler = async (req, res, next) => {
     },
   });
 };
-
-exports.updateProfilePicture = async (req, res) => {
-  const userId = req.user.id;
-  const profilePicture = req.file.filename;
-
-  const user = await User.findOne({ where: { id: userId } });
-  if (!user) {
-    res.status(404).json({ ok: false, message: "User not found" });
-    return;
-  }
-
-  user.profilePicture = profilePicture;
-  await user.save();
-
-  res.json({
-    ok: true,
-    data: user.profilePicture,
-    message: "Profile Picture Successfully Uploaded",
-  });
-};
