@@ -28,7 +28,14 @@ exports.loginHandler = async (req, res) => {
     });
   }
 
-  const payload = { id: user.id, role: user.role, userName: user.name };
+  const payload = {
+    id: user.id,
+    role: user.role,
+    username: user.username,
+    name: user.name,
+    email: user.email,
+    profilePicture: user.profilePicture,
+  };
   const token = jwt.sign(payload, JWT_SECRET_KEY, {
     expiresIn: "1d",
   });
@@ -37,9 +44,11 @@ exports.loginHandler = async (req, res) => {
     ok: true,
     data: {
       token,
-      name: user.name,
-      username: user.username,
+      id: user.id,
       role: user.role,
+      username: user.username,
+      name: user.name,
+      email: user.email,
       profilePicture: user.profilePicture,
     },
   });

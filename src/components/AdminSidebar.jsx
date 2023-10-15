@@ -19,15 +19,17 @@ const AdminSideBar = ({ onMenuItemClick }) => {
     window.location.href = "/";
   };
 
+  document.title = "Admin Menu";
+
   return (
-    <div className="flex bg-[#01AB52]">
-      <div className="w-72 bg-dark-purple h-screen p-5 pt-8 flex flex-col justify-between">
+    <div className="flex bg-[#01AB52] shadow-md">
+      <div className="w-72 h-screen p-5 pt-8 flex flex-col justify-between">
         <div>
           <div className="flex gap-x-4 items-center">
             <img
               src={image1}
               alt="logo"
-              className="cursor-pointer h-[60px] w-[130px] ml-[25px]"
+              className="cursor-pointer h-[70px] w-[160px] ml-[25px]"
             />
           </div>
           <div className="mt-8">
@@ -68,7 +70,7 @@ const AdminSideBar = ({ onMenuItemClick }) => {
             </ul>
           </div>
         </div>
-        <div className="text-center">
+        <div className="text-white">
           <UserAvatar />
         </div>
       </div>

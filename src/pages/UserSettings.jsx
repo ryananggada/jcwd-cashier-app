@@ -1,4 +1,5 @@
 import React from "react";
+import api from "../api.js";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import UploadProfilePicture from "../components/UploadProfilePicture.jsx";
@@ -24,7 +25,23 @@ export default function UserSettings() {
   });
 
   const onSubmit = async (values) => {
-    console.log("Form Values:", values);
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await api.patch("/user/updatesettings", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      if (response.ok) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error updating profile settings:", error);
+    }
   };
 
   const formik = useFormik({
@@ -32,9 +49,8 @@ export default function UserSettings() {
     validationSchema,
     onSubmit,
   });
-
   return (
-    <section className="flex flex-col items-center justify-center min-h-screen bg-[#01AB52]">
+    <section className="flex flex-col items-center justify-center w-full min-h-screen bg-[#01AB52]">
       <div className="bg-white p-8 rounded-md shadow-lg w-full sm:w-96">
         <h2 className="text-2xl font-semibold mb-4">User Settings</h2>
         <form onSubmit={formik.handleSubmit}>

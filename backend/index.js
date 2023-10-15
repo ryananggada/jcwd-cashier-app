@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
 const authRouter = require("./routes/auth");
@@ -16,6 +16,7 @@ app.use("/categories", categoryRouter);
 app.use("/products", productRouter);
 app.use("/admin", adminRouter);
 app.use("/user", userRouter);
+app.use("/profile-picture", express.static(__dirname + "/public"));
 
 // 404 Not Found route
 app.use((req, res) => {

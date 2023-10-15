@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import api from "../api.js";
 import { RiAddFill } from "react-icons/ri";
 
-export default function UploadProfilePicture() {
+export default function NewCashierProfilePicture() {
   const formik = useFormik({
     initialValues: {
       profilePicture: null,
@@ -27,7 +27,7 @@ export default function UploadProfilePicture() {
         const formData = new FormData();
         if (values.profilePicture) {
           formData.append("profilePicture", values.profilePicture);
-          const response = await api.post("/user/updateprofile", formData, {
+          const response = await api.post("/admin/new_cashier", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${localStorage.getItem("token")}`,

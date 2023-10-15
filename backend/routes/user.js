@@ -11,16 +11,9 @@ router.post(
 );
 
 router.patch(
-  "/changeusername",
+  "/updatesettings",
   authMiddleware.tokenValidator,
-  userController.changeUsername
-);
-
-router.patch(
-  "/change_password",
-  authMiddleware.tokenValidator,
-  userController.currentPasswordValidator,
-  userController.changePassword
+  userController.updateProfileSettings
 );
 
 module.exports = router;

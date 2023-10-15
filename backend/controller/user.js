@@ -21,107 +21,49 @@ exports.updateProfilePicture = async (req, res) => {
   });
 };
 
-exports.changeUsername = async (req, res) => {
-  const userId = req.user.id;
-  const { username } = req.body;
+exports.updateProfileSettings = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { currentPassword, newPassword, email, username } = req.body;
 
-  const user = await User.findOne({ where: { id: userId } });
-  if (!user) {
-    res.status(404).json({ ok: false, message: "User not found" });
-    return;
+    // Find the user by their ID
+    const user = await User.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return res.status(404).json({ ok: false, message: "User not found" });
+    }
+
+    // Verify the current password
+    const isMatch = bcrypt.compareSync(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ ok: false, message: "Wrong Password" });
+    }
+
+    // Update the user settings
+    if (newPassword) {
+      // If a new password is provided, hash and save it
+      const hashedPassword = bcrypt.hashSync(newPassword, 10);
+      user.password = hashedPassword;
+    }
+
+    if (email) {
+      user.email = email;
+    }
+
+    if (username) {
+      user.username = username;
+    }
+
+    // Save the updated user
+    await user.save();
+
+    return res.json({
+      ok: true,
+      message: "Profile Settings Successfully Updated",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ ok: false, message: "Internal server error" });
   }
-
-  user.username = username;
-  await user.save();
-
-  res.json({
-    ok: true,
-    data: user.username,
-    message: "Username Successfully Changed",
-  });
-};
-
-exports.changePassword = async (req, res) => {
-  const userId = req.user.id;
-  const { password } = req.body;
-
-  const user = await User.findOne({ where: { id: userId } });
-  if (!user) {
-    res.status(404).json({ ok: false, message: "User not found" });
-    return;
-  }
-
-  const salt = bcrypt.genSaltSync(10);
-  const hashedPassword = bcrypt.hashSync(password, salt);
-
-  user.password = hashedPassword;
-  await user.save();
-
-  res.json({
-    ok: true,
-    message: "Password Successfully Changed",
-  });
-};
-
-exports.changeName = async (req, res) => {
-  const userId = req.user.id;
-  const { name } = req.body;
-
-  const user = await User.findOne({ where: { id: userId } });
-  if (!user) {
-    res.status(404).json({ ok: false, message: "User not found" });
-    return;
-  }
-
-  user.name = name;
-  await user.save();
-
-  res.json({
-    ok: true,
-    data: user.name,
-    message: "Name Successfully Changed",
-  });
-};
-
-exports.changeEmail = async (req, res) => {
-  const userId = req.user.id;
-  const { email } = req.body;
-
-  const user = await User.findOne({ where: { id: userId } });
-  if (!user) {
-    res.status(404).json({ ok: false, message: "User not found" });
-    return;
-  }
-
-  user.email = email;
-  await user.save();
-
-  res.json({
-    ok: true,
-    data: user.email,
-    message: "Email Successfully Changed",
-  });
-};
-
-exports.currentPasswordValidator = async (req, res, next) => {
-  const userId = req.user.id;
-  const { password } = req.body;
-
-  const user = await User.findOne({ where: { id: userId } });
-  if (!user) {
-    res.status(404).json({ ok: false, message: "User not found" });
-    return;
-  }
-
-  const isMatch = bcrypt.compareSync(password, user.password);
-  if (!isMatch) {
-    res.status(400).json({ ok: false, message: "Wrong Password" });
-    return;
-  }
-
-  res.json({
-    ok: true,
-    message: "Password is Match",
-  });
-  next();
 };

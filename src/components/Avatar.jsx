@@ -1,55 +1,37 @@
 import React, { useEffect, useState } from "react";
-import jwt_decode from "jwt-decode";
-import api from "../api.js";
+import jwt from "jwt-decode";
 
 export default function UserAvatar() {
-  const [user, setUser] = useState(null);
+  const token = localStorage.getItem("token");
+  const decodedToken = jwt(token);
+  const profPicSrc = `http://localhost:8000/profile-picture/`;
 
-  useEffect(() => {
-    // Retrieve the JWT token from localStorage
-    const token = localStorage.getItem("token");
+  const { name, role, profilePicture } = decodedToken;
 
-    if (token) {
-      // Decode the JWT token to get user information
-      const decoded = jwt_decode(token);
-      console.log("Decoded JWT token:", decoded);
+  const defaultAvatarURL =
+    "https://cdn.pixabay.com/photo/2020/07/14/13/07/icon-5404125_1280.png";
+  const avatarURL = profilePicture
+    ? `${profPicSrc}/${profilePicture}`
+    : defaultAvatarURL;
 
-      // Fetch user data from the server using the token
-      api
-        .get("/api/user", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          const userData = response.data;
-          console.log("User data from server:", userData);
-          setUser(userData);
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        });
-    } else {
-      console.log("No JWT token found in localStorage.");
-    }
-  }, []);
-
-  if (!user) {
-    return null;
-  }
+  // Function to capitalize the first letter of each word
+  const capitalizeWords = (text) => {
+    return text
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
 
   return (
     <div className="flex items-center gap-x-2">
       <img
-        className="h-8 w-8 rounded-full object-cover"
-        src={user.profilePicture || "default_image_url.jpg"}
-        alt={user.name}
+        className="h-[60px] w-[60px] rounded-full object-cover"
+        src={avatarURL}
+        alt={name}
       />
       <div className="flex flex-col">
-        <span className="text-sm font-semibold">
-          {user.name || "Default Name"}
-        </span>
-        <span className="text-xs">{user.role || "Default Role"}</span>
+        <span className="text-sm font-semibold">{capitalizeWords(name)}</span>
+        <span className="text-xs">{capitalizeWords(role)}</span>
       </div>
     </div>
   );
