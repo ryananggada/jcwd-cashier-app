@@ -1,4 +1,4 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import { default as AdminProductList } from "./pages/product-list";
 import ProductCategoryList from "./pages/product-category-list";
@@ -15,6 +15,7 @@ function App() {
         <Route path="/" element={<Login />} />
         {/* TO DO: Ubah path tergantung dia admin atau cashier */}
         {/* TO DO: integrasikan routes ke Sidebar admin atau cashier */}
+        {/* TO DO: kalau localStorage.token atau cookies == null harus redirect ke "/" */}
         <Route path="/products/:page" element={<AdminProductList />} />
         <Route path="/product-categories" element={<ProductCategoryList />} />
         <Route path="/create-product" element={<CreateProduct />} />

@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import api from "../api";
 
 function CreateCategory() {
+  const token = localStorage.getItem("token");
   const createCategory = async (name, description) => {
     try {
       const response = await api.post(
@@ -14,7 +15,7 @@ function CreateCategory() {
         },
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwidXNlcm5hbWUiOiJ0aGFyZXEiLCJuYW1lIjoiVGhhcmVxIE11aGFtbWFkIEF6YW5pIiwiZW1haWwiOiJ0aGFyZXFhemFuaUBnbWFpbC5jb20iLCJwcm9maWxlUGljdHVyZSI6IklNRy0xNjk3MzY2NTUzMTc0NjQ4MS5wbmciLCJpYXQiOjE2OTczODI0NzMsImV4cCI6MTY5NzQ2ODg3M30.pmZ0bLdcQPlCsJ4uX0Lm_TSWY_2qHHQ9n7bD3-kM69w`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
