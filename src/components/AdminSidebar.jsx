@@ -1,25 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdDashboard, MdLogout } from "react-icons/md";
 import { GiCardboardBox } from "react-icons/gi";
 import { VscGraphLine } from "react-icons/vsc";
 import { BsFillPersonFill } from "react-icons/bs";
 import { GoGear } from "react-icons/go";
+import { TbReportMoney } from "react-icons/tb";
+import { PiCalculatorThin } from "react-icons/pi";
 import image1 from "../assets/familymartwhite svg.svg";
 import UserAvatar from "./Avatar";
 
 const AdminSideBar = ({ onMenuItemClick }) => {
+  const [isReportExpanded, setIsReportExpanded] = useState(false);
+
   const logoutHandler = () => {
     localStorage.removeItem("token");
+    window.location.href = "/";
 
     document.cookie.split(";").forEach(function (c) {
       document.cookie = c
         .replace(/^ +/, "")
         .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
-    window.location.href = "/";
   };
 
-  document.title = "Admin Menu";
+  const toggleReportMenu = () => {
+    setIsReportExpanded(!isReportExpanded);
+  };
 
   return (
     <div className="flex bg-[#01AB52] shadow-md">
@@ -38,14 +44,35 @@ const AdminSideBar = ({ onMenuItemClick }) => {
                 <MdDashboard className="h-[30px] w-[30px]" />
                 <span className="p-2 rounded-md">Dashboard</span>
               </li>
-              <li className="flex rounded-md p-2 cursor-pointer hover:bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg">
+              <li
+                className="flex rounded-md p-2 cursor-pointer hover.bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg"
+                onClick={toggleReportMenu}
+              >
                 <VscGraphLine className="h-[30px] w-[30px]" />
                 <span className="p-2 rounded-md">Report</span>
               </li>
-              <li className="flex rounded-md p-2 cursor-pointer hover:bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg">
+              {isReportExpanded && (
+                <>
+                  <li className="flex rounded-md p-2 cursor-pointer hover.bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg">
+                    {/* Add Sales Report Icon */}
+                    <TbReportMoney className="h-[20px] w-[20px]" />
+                    <span className="p-2 rounded-md">Sales Report</span>
+                  </li>
+                  <li className="flex rounded-md p-2 cursor-pointer hover.bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg">
+                    {/* Add Transaction Icon */}
+                    <PiCalculatorThin className="h-[20px] w-[20px]" />
+                    <span className="p-2 rounded-md">Transaction</span>
+                  </li>
+                </>
+              )}
+              <li
+                className="flex rounded-md p-2 cursor-pointer hover.bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg"
+                onClick={() => onMenuItemClick("ProductControlPanel")}
+              >
                 <GiCardboardBox className="h-[30px] w-[30px]" />
                 <span className="p-2 rounded-md">Product</span>
               </li>
+
               <li
                 className="flex rounded-md p-2 cursor-pointer hover.bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg"
                 onClick={() => onMenuItemClick("Cashier")}
