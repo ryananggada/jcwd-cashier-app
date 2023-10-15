@@ -94,13 +94,17 @@ export default function CashierControlPanel() {
   };
 
   return (
-    <div>
-      <h1>Cashier Control Panel (Admin Only)</h1>
+    <div className="p-4">
+      <h1 className="text-2xl font-semibold text-[#01AB52] mb-4">
+        Cashier Control Panel (Admin Only)
+      </h1>
 
       {/* Create New Cashier */}
-      <div>
-        <h2>Create New Cashier</h2>
+      <div className="mb-6 p-4 bg-white rounded-md shadow-lg">
+        <h2 className="text-lg font-semibold mb-2">Create New Cashier</h2>
         <input
+          required
+          className="w-full px-3 py-2 mb-2 rounded-md border border-[#01AB52] focus:outline-none focus:ring focus:ring-[#01AB52]"
           type="text"
           placeholder="Username"
           value={newCashier.username}
@@ -109,6 +113,8 @@ export default function CashierControlPanel() {
           }
         />
         <input
+          required
+          className="w-full px-3 py-2 mb-2 rounded-md border border-[#01AB52] focus:outline-none focus:ring focus:ring-[#01AB52]"
           type="password"
           placeholder="Password"
           value={newCashier.password}
@@ -117,6 +123,8 @@ export default function CashierControlPanel() {
           }
         />
         <input
+          required
+          className="w-full px-3 py-2 mb-2 rounded-md border border-[#01AB52] focus:outline-none focus:ring focus:ring-[#01AB52]"
           type="text"
           placeholder="Name"
           value={newCashier.name}
@@ -124,29 +132,39 @@ export default function CashierControlPanel() {
             setNewCashier({ ...newCashier, name: e.target.value })
           }
         />
-        <button onClick={handleCreateCashier}>Create</button>
+        <button
+          className="w-full py-2 bg-[#01AB52] text-white rounded-md hover:bg-[#018947] focus:outline-none focus:ring focus:ring-[#018947]"
+          onClick={handleCreateCashier}
+        >
+          Create
+        </button>
       </div>
 
       {/* List of Cashiers */}
-      <h2>List of Cashiers</h2>
-      <button onClick={fetchCashiers}>Show All Cashiers</button>
-      <table>
+      <table className="w-full border">
         <thead>
-          <tr>
-            <th>Username</th>
-            <th>Name</th>
-            <th>Active</th>
-            <th>Action</th>
+          <tr className="bg-[#01AB52] text-white">
+            <th className="border px-4 py-2 w-1/4">Username</th>
+            <th className="border px-4 py-2 w-1/4">Name</th>
+            <th className="border px-4 py-2 w-1/4">Active</th>
+            <th className="border px-4 py-2 w-1/4">Action</th>
           </tr>
         </thead>
         <tbody>
           {cashiers.map((cashier) => (
-            <tr key={cashier.username}>
-              <td>{cashier.username}</td>
-              <td>{cashier.name}</td>
-              <td>{cashier.isActive ? "Active" : "Non-active"}</td>
-              <td>
+            <tr key={cashier.username} className="text-center">
+              <td className="border px-4 py-2 w-1/4 break-words">
+                {cashier.username}
+              </td>
+              <td className="border px-4 py-2 w-1/4 break-words">
+                {cashier.name}
+              </td>
+              <td className="border px-4 py-2 w-1/4 break-words">
+                {cashier.isActive ? "Active" : "Non-active"}
+              </td>
+              <td className="border px-4 py-2  flex flex-row">
                 <button
+                  className="bg-[#01AB52] hover:bg-opacity-80 text-white font-bold px-6 rounded-md mr-2"
                   onClick={() =>
                     handleToggleCashierStatus(
                       cashier.username,
@@ -156,7 +174,10 @@ export default function CashierControlPanel() {
                 >
                   Toggle Status
                 </button>
-                <button onClick={() => handleDeleteCashier(cashier.username)}>
+                <button
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold px-6 rounded-md"
+                  onClick={() => handleDeleteCashier(cashier.username)}
+                >
                   Delete
                 </button>
               </td>
@@ -164,6 +185,13 @@ export default function CashierControlPanel() {
           ))}
         </tbody>
       </table>
+
+      <button
+        className="w-full py-2 mt-6 bg-[#01AB52] text-white rounded-md hover:bg-[#018947] focus:outline-none focus:ring focus:ring-[#018947]"
+        onClick={fetchCashiers}
+      >
+        Refresh List
+      </button>
     </div>
   );
 }

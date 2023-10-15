@@ -17,8 +17,9 @@ router.patch(
 );
 
 router.patch(
-  "/changepassword",
+  "/change_password",
   authMiddleware.tokenValidator,
+  userController.currentPasswordValidator,
   userController.changePassword
 );
 

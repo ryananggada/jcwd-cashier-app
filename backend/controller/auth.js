@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const { User } = require("../models");
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
-exports.loginHandler = async (req, res, next) => {
+exports.loginHandler = async (req, res) => {
   const { username, password } = req.body;
 
   const user = await User.findOne({
@@ -38,6 +38,7 @@ exports.loginHandler = async (req, res, next) => {
     data: {
       token,
       name: user.name,
+      username: user.username,
       role: user.role,
       profilePicture: user.profilePicture,
     },

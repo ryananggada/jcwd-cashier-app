@@ -1,18 +1,22 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import api from "../api.js";
-import AdminSidebar from "../components/AdminSidebar.jsx";
+import AdminSidebar from "../components/AdminSidebar";
+import CashierControlPanel from "./CashierControlPanel";
+import UserSetting from "./UserSettings";
 
 export default function AdminMenu() {
+  const [activeMenuItem, setActiveMenuItem] = useState("Dashboard");
+
+  const handleMenuItemClick = (menuItem) => {
+    setActiveMenuItem(menuItem);
+  };
+
   return (
-    <div className="flex flex-row">
-      <AdminSidebar />
-      <h1>
-        <p>Admin Page</p>
-      </h1>
-      <div></div>
-    </div>
+    <section className="flex flex-row">
+      <AdminSidebar onMenuItemClick={handleMenuItemClick} />
+      <div className="ml-[40px] mt-[40px]">
+        {activeMenuItem === "Cashier" ? <CashierControlPanel /> : null}
+        {activeMenuItem === "Setting" ? <UserSetting /> : null}
+      </div>
+    </section>
   );
 }

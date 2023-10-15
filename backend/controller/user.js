@@ -82,3 +82,46 @@ exports.changeName = async (req, res) => {
     message: "Name Successfully Changed",
   });
 };
+
+exports.changeEmail = async (req, res) => {
+  const userId = req.user.id;
+  const { email } = req.body;
+
+  const user = await User.findOne({ where: { id: userId } });
+  if (!user) {
+    res.status(404).json({ ok: false, message: "User not found" });
+    return;
+  }
+
+  user.email = email;
+  await user.save();
+
+  res.json({
+    ok: true,
+    data: user.email,
+    message: "Email Successfully Changed",
+  });
+};
+
+exports.currentPasswordValidator = async (req, res, next) => {
+  const userId = req.user.id;
+  const { password } = req.body;
+
+  const user = await User.findOne({ where: { id: userId } });
+  if (!user) {
+    res.status(404).json({ ok: false, message: "User not found" });
+    return;
+  }
+
+  const isMatch = bcrypt.compareSync(password, user.password);
+  if (!isMatch) {
+    res.status(400).json({ ok: false, message: "Wrong Password" });
+    return;
+  }
+
+  res.json({
+    ok: true,
+    message: "Password is Match",
+  });
+  next();
+};

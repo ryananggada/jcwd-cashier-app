@@ -19,8 +19,8 @@ function App() {
       <Link to="/products/0">products</Link>
       <Link to="/product-categories">product categories</Link> */}
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        {/* Homepage langsung ke Login aja */}
+        <Route path="/" element={<Login />} />
         {/* TO DO: Ubah path tergantung dia admin atau cashier */}
         <Route path="/products/:page" element={<AdminProductList />} />
         <Route path="/product-categories" element={<ProductCategoryList />} />
@@ -30,7 +30,6 @@ function App() {
         <Route path="/admin" element={<AdminMenu />} />
         <Route path="/cashier" element={<CashierMenu />} />
         {/*<Route path="/user-setting" element={<UserSetting />} />*/}
-        <Route path="/cashier-panel" element={<CashierControlPanel />} />
       </Routes>
     </>
   );
