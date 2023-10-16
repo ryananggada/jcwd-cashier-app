@@ -28,7 +28,6 @@ exports.addNewProduct = async (req, res) => {
 exports.editProduct = async (req, res) => {
   const productId = req.params.id;
   const { name, price, categoryId, description, isActive } = req.body;
-  const { filename } = req.file;
 
   try {
     const product = await Product.findOne({ where: { id: productId } });
@@ -39,7 +38,9 @@ exports.editProduct = async (req, res) => {
 
     product.name = name;
     product.price = price;
-    product.image = filename;
+    if (req.file) {
+      product.image = req.file.filename;
+    }
     product.categoryId = categoryId;
     product.description = description;
     product.isActive = isActive;

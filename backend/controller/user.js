@@ -24,7 +24,7 @@ exports.updateProfilePicture = async (req, res) => {
 exports.updateProfileSettings = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { currentPassword, newPassword, email, username } = req.body;
+    const { newPassword, email, username } = req.body;
 
     // Find the user by their ID
     const user = await User.findOne({ where: { id: userId } });
@@ -34,10 +34,6 @@ exports.updateProfileSettings = async (req, res) => {
     }
 
     // Verify the current password
-    const isMatch = bcrypt.compareSync(currentPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ ok: false, message: "Wrong Password" });
-    }
 
     // Update the user settings
     if (newPassword) {
@@ -59,6 +55,7 @@ exports.updateProfileSettings = async (req, res) => {
 
     return res.json({
       ok: true,
+      status: 200,
       message: "Profile Settings Successfully Updated",
     });
   } catch (error) {

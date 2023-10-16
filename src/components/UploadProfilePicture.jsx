@@ -8,6 +8,7 @@ import { RiAddFill } from "react-icons/ri";
 export default function UploadProfilePicture() {
   const formik = useFormik({
     initialValues: {
+      name: "",
       profilePicture: null,
     },
     validationSchema: Yup.object({
@@ -24,20 +25,17 @@ export default function UploadProfilePicture() {
     }),
     onSubmit: async (values) => {
       try {
+        const token = localStorage.getItem("token");
         const formData = new FormData();
-        if (values.profilePicture) {
-          formData.append("profilePicture", values.profilePicture);
-          const response = await api.post("/user/updateprofile", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          });
-          console.log("Upload response:", response.data);
-        }
-      } catch (error) {
-        console.error("Upload failed:", error);
-      }
+        formData.append("profilePicture", values.profilePicture);
+        console.log(values);
+        await api.post("/user/updateprofile", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } catch (error) {}
     },
   });
 
@@ -48,7 +46,7 @@ export default function UploadProfilePicture() {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <>
       <h1>Profile Picture</h1>
       <div
         {...getRootProps()}
@@ -68,6 +66,7 @@ export default function UploadProfilePicture() {
             {...getInputProps()}
             id="dropzone-file"
             type="file"
+            name="profilePicture"
             className="hidden"
             accept="image/"
             multiple={false}
@@ -80,11 +79,14 @@ export default function UploadProfilePicture() {
       )}
 
       <button
-        type="submit"
+        type="button"
+        onClick={() => {
+          formik.handleSubmit();
+        }}
         className="w-1/2 bg-[#01AB52] mt-4 mb-11 text-white font-medium text-lg py-2 rounded-md hover:bg-[#018947] focus:outline-none focus:ring focus:ring-[#018947]"
       >
         Upload
       </button>
-    </form>
+    </>
   );
 }

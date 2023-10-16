@@ -19,6 +19,7 @@ app.use("/admin", adminRouter);
 app.use("/user", userRouter);
 app.use("/transaction", transactionRouter);
 app.use("/profile-picture", express.static(__dirname + "/public"));
+app.use("/product-image", express.static(__dirname + "/public"));
 
 // 404 Not Found route
 app.use((req, res) => {
