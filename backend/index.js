@@ -10,12 +10,14 @@ const categoryRouter = require("./routes/category");
 const productRouter = require("./routes/product");
 const adminRouter = require("./routes/admin");
 const userRouter = require("./routes/user");
+const transactionRouter = require("./routes/transaction");
 
 app.use("/auth", authRouter);
 app.use("/categories", categoryRouter);
 app.use("/products", productRouter);
 app.use("/admin", adminRouter);
 app.use("/user", userRouter);
+app.use("/transaction", transactionRouter);
 app.use("/profile-picture", express.static(__dirname + "/public"));
 
 // 404 Not Found route

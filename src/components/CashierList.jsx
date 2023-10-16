@@ -112,9 +112,14 @@ export default function CashierList() {
               <td className="border px-4 py-2 w-1/4 break-words">
                 {cashier.name}
               </td>
-              <td className="border px-4 py-2 w-1/4 break-words">
+              <td
+                className={`border px-4 py-2 w-1/4 break-words ${
+                  cashier.isActive ? "text-[#01ab52]" : "text-red-500"
+                }`}
+              >
                 {cashier.isActive ? "Active" : "Non-active"}
               </td>
+
               <td className="border px-4 py-2  flex flex-row">
                 <button
                   className="bg-[#01AB52] hover:bg-opacity-80 text-white font-bold px-6 rounded-md mr-2"

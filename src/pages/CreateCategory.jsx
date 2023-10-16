@@ -1,10 +1,10 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
-import Cookies from "js-cookie";
-import Dashboard from "../components/Dashboard";
+
 import api from "../api";
 
 function CreateCategory() {
+  const token = localStorage.getItem("token");
   const createCategory = async (name, description) => {
     try {
       const response = await api.post(
@@ -15,7 +15,7 @@ function CreateCategory() {
         },
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -53,75 +53,71 @@ function CreateCategory() {
   });
 
   return (
-    <Dashboard>
-      <section>
-        <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16">
-          <h2 className="mb-4 text-xl font-bold text-gray-900">
-            Add new category
-          </h2>
-          <form onSubmit={formik.handleSubmit}>
-            <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-              <div class="sm:col-span-2">
-                <label
-                  for="name"
-                  class="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 ${
-                    formik.touched.name && formik.errors.name
-                      ? "border-red-500"
-                      : ""
-                  }`}
-                  placeholder="Category Name"
-                  required
-                  {...formik.getFieldProps("name")}
-                />
-                {formik.touched.name && formik.errors.name && (
-                  <div className="text-red-500">{formik.errors.name}</div>
-                )}
-              </div>
-              <div class="sm:col-span-2">
-                <label
-                  for="description"
-                  class="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Description
-                </label>
-                <input
-                  type="text"
-                  name="description"
-                  id="description"
-                  className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 ${
-                    formik.touched.description && formik.errors.description
-                      ? "border-red-500"
-                      : ""
-                  }`}
-                  placeholder="Category Description"
-                  required
-                  {...formik.getFieldProps("description")}
-                />
-                {formik.touched.description && formik.errors.description && (
-                  <div className="text-red-500">
-                    {formik.errors.description}
-                  </div>
-                )}
-              </div>
+    <section>
+      <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+        <h2 className="mb-4 text-xl font-bold text-gray-900">
+          Add new category
+        </h2>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+            <div class="sm:col-span-2">
+              <label
+                for="name"
+                class="block mb-2 text-sm font-medium text-gray-900"
+              >
+                Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 ${
+                  formik.touched.name && formik.errors.name
+                    ? "border-red-500"
+                    : ""
+                }`}
+                placeholder="Category Name"
+                required
+                {...formik.getFieldProps("name")}
+              />
+              {formik.touched.name && formik.errors.name && (
+                <div className="text-red-500">{formik.errors.name}</div>
+              )}
             </div>
-            <button
-              type="submit"
-              className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-800"
-            >
-              Add category
-            </button>
-          </form>
-        </div>
-      </section>
-    </Dashboard>
+            <div class="sm:col-span-2">
+              <label
+                for="description"
+                class="block mb-2 text-sm font-medium text-gray-900"
+              >
+                Description
+              </label>
+              <input
+                type="text"
+                name="description"
+                id="description"
+                className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 ${
+                  formik.touched.description && formik.errors.description
+                    ? "border-red-500"
+                    : ""
+                }`}
+                placeholder="Category Description"
+                required
+                {...formik.getFieldProps("description")}
+              />
+              {formik.touched.description && formik.errors.description && (
+                <div className="text-red-500">{formik.errors.description}</div>
+              )}
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="w-full py-2 mt-6 bg-[#01AB52] text-white rounded-md hover:bg-[#018947] focus:outline-none focus:ring focus:ring-[#018947]"
+          >
+            Add category
+          </button>
+        </form>
+      </div>
+    </section>
   );
 }
 
