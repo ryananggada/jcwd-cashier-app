@@ -110,10 +110,10 @@ exports.handleGetProductsPage = async (req, res) => {
       throw "Page must be a number";
     }
     const queryStruct = {};
-    if (!isNaN(category)) {
+    if (!isNaN(category) && (category)) {
       queryStruct.categoryId = category;
     }
-    if (typeof nameFilter === "string") {
+    if ((typeof nameFilter === "string") && (nameFilter)) {
       queryStruct.name = { [Op.substring]: nameFilter };
     }
     const { count, rows } = await Product.findAndCountAll({
