@@ -1,42 +1,27 @@
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import api from "../api";
-import { useParams, useSearchParams, redirect } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { isEmptyArray, useFormik } from "formik";
 import { BsSearch } from "react-icons/bs";
+
 // import Dashboard from "../components/Dashboard";
 
-// TO DO: Ubah page indexing dari 0 ke 1
 function ProductList() {
-  const { page } = useParams();
-  const [products, setProducts] = useState([]);
+  const [pageSearch, setPageSearch] = useState(1)
+  const [products, setProducts] = useState([{}]);
   const [productAmount, setProductAmount] = useState(0);
   const [availablePages, setAvailablePages] = useState(0);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [categories, setCategories] = useState([{}]);
+
   useEffect(() => {
-    if (isNaN(page) || page % 1 !== 0) {
-      redirect(`/products/0?${searchParams.toString()}`);
-    }
-  }, [page]);
-  useEffect(() => {
-    setAvailablePages(Math.ceil(productAmount / 10) - 1);
+    setAvailablePages(Math.max(Math.ceil(productAmount / 10), 1));
   }, [productAmount]);
-  const pageNavSchema = yup.object().shape({
-    to: yup.number().integer().min(0),
-  });
-  const pageNavForm = useFormik({
-    initialValues: {
-      to: isNaN(page) ? 0 : page,
-    },
-    validationSchema: pageNavSchema,
-    onSubmit: (values) => {
-      redirect(`/products/${values.to}?${searchParams.toString()}`);
-    },
-  });
+
   useEffect(() => {
     api
-      .get(`/products/${page}?${searchParams.toString()}`)
+      .get(`/products/${isNaN(pageSearch) || (pageSearch % 1 !== 0)? 0 :pageSearch - 1}${searchParams.toString() ? "?" : ""}${searchParams.toString()}`)
       .then((res) => {
         setProducts(res.data.data); // TOLONG
         setProductAmount(res.data.amount);
@@ -45,7 +30,8 @@ function ProductList() {
         window.alert("Failed to load product data");
         console.log(err);
       });
-  }, [page, searchParams]);
+  }, [pageSearch, searchParams]);
+
   useEffect(() => {
     api
       .get("/categories")
@@ -56,7 +42,43 @@ function ProductList() {
         window.alert("Failed to load category data");
         console.log(err);
       });
-  }, [page, searchParams]);
+  }, [pageSearch, searchParams]);
+
+  const searchSchema = yup.object().shape({
+    nameFilter: yup.string(),
+    category: yup.string(),
+    sortType: yup.string(),
+    sortAscend: yup.number().required().integer().min(0).max(1) // bool
+  })
+  const searchForm = useFormik({
+    initialValues: {
+      nameFilter: "",
+      category: "",
+      sortType: "",
+      sortAscend: 0
+    },
+    validationSchema: searchSchema,
+    onSubmit: (values) => {
+      setPageSearch(1)
+      const valCopy = new URLSearchParams(values)
+      setSearchParams(valCopy)
+    }
+  })
+  
+  const pageSchema = yup.object().shape({
+    to: yup.number().integer().min(1)
+  })
+
+  const pageForm = useFormik({
+    initialValues: {
+      to: pageSearch
+    },
+    validationSchema: pageSchema,
+    onSubmit: (values) => {
+      const { to } = values
+      setPageSearch(to)
+    }
+  })
   /* 
     const fetchData = async () => {
         try {
@@ -68,25 +90,23 @@ function ProductList() {
             console.log(err)
         }
     } 
-    */
-  /*
-    const 
-    */
+  */
 
   return (
     // <Dashboard>
     <>
       <div className="pt-10 pb-2 px-4 mx-auto max-w-2xl lg:pt-16">
-        <form action="">
+        <form onSubmit={searchForm.handleSubmit}>
           <div className="grid grid-cols-3 sm:grid-cols-2">
             <input
               type="text"
               name="nameFilter"
               placeholder="Product Name"
               className="m-0 py-px rounded-l-full col-span-2 sm:col-span-1"
+              {...searchForm.getFieldProps("nameFilter")}
             />
-            <select className="m-0 py-px rounded-r-full" name="category">
-              <option className="text-gray-300">Category...</option>
+            <select className="m-0 py-px rounded-r-full" name="category" {...searchForm.getFieldProps("category")}>
+              <option className="text-gray-300" value="any">Category...</option>
               {categories.map((cate) => (
                 <option key={cate.id} value={cate.id}>
                   {cate.name}
@@ -96,18 +116,46 @@ function ProductList() {
           </div>
           Sort by{" "}
           {/*Date of creation <input type="radio" name="sortType" value="createdAt"/> */}
-          Name <input type="radio" name="sortType" value="name" />
-          Price <input type="radio" name="sortType" value="price" />
-          Descending <input type="radio" name="sortAscend" value="0" />
-          Ascending
-          <input type="radio" name="sortAscend" value="1" />
+          Name <input 
+            type="radio" 
+            name="sortType" 
+            value="name"
+            onChange={() => searchForm.setFieldValue("sortType", "name", true)}
+          />
+          Price <input 
+            type="radio" 
+            name="sortType" 
+            value="price"  
+            onChange={() => searchForm.setFieldValue("sortType", "price", true)}
+          />
+          Descending <input 
+            type="radio" 
+            name="sortAscend" 
+            value="0" 
+            defaultChecked={true}
+            onChange={() => searchForm.setFieldValue("sortAscend", 0, true)}
+          />
+          Ascending <input 
+            type="radio" 
+            name="sortAscend" 
+            value="1" 
+            onChange={() => searchForm.setFieldValue("sortAscend", 1, true)}
+          />
           <button
-            className="items-center p-1 border-2 border-green-300 rounded-full hover:border-green-500 hover:bg-green-100"
+            className="items-center p-1 border-2 border-green-300 rounded-full hover:border-green-400 hover:bg-green-50"
             type="submit"
           >
             <BsSearch />
           </button>
-        </form>
+        </form> 
+        <hr/>
+        { (searchParams.get("category") && categories.find((cate) => cate.id === Number(searchParams.get("category"))))
+        ? <div
+                className="pl-1"
+        > 
+            {categories.find((cate) => cate.id === Number(searchParams.get("category"))).description} 
+        </div>
+        : <></>}
         <section className="grid gap-1.5 sm:grid-cols-2">
           {isEmptyArray(products)
             ? "No items found."
@@ -118,10 +166,9 @@ function ProductList() {
                   key={item.id}
                 >
                   <img src={item.image} alt="" className="col-span-2" />
-                  <div className="text-xl font-bold">Price: {item.price}</div>
-                  <div className="text-lg font-semibold">Name: {item.name}</div>
+                  <div className="text-xl font-bold cols">{item.price}</div>
+                  <div className="text-lg font-semibold">{item.name}</div>
                   <div>
-                    Category:
                     <div className="grid gap-0.5 sm:grid-cols-2">
                       <div>
                         {categories.find((cate) => cate.id === item.categoryId)
@@ -139,7 +186,7 @@ function ProductList() {
                       </div>
                     </div>
                   </div>
-                  <div>Description: {item.description}</div>
+                  <div>{item.description}</div>
                   <label>
                     Active:
                     <input
@@ -155,22 +202,21 @@ function ProductList() {
         </section>
       </div>
       <div>
-        {" "}
-        Page {page} of {availablePages}{" "}
+        Page {pageSearch} of {availablePages}
       </div>
-      <form onSubmit={pageNavForm.submitForm}>
+      <form onSubmit={pageForm.handleSubmit}>
         <label>
           Go to:
           <input
             type="number"
             name="to"
-            value={page}
+            value={pageSearch}
             className="py-px rounded-full"
-            min={0}
+            min={1}
             max={availablePages}
-            maxLength={Math.max(Math.ceil(Math.log10(availablePages)), 1)}
-            size={Math.max(Math.ceil(Math.log10(availablePages) + 1), 2)}
-            {...pageNavForm.getFieldProps("to")}
+            maxLength={Math.max(Math.floor(Math.log10(availablePages) + 1), 1)}
+            size={Math.max(Math.floor(Math.log10(availablePages) + 2), 2)}
+            {...pageForm.getFieldProps("to")}
           />
         </label>
       </form>
