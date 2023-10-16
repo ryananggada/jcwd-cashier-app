@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import { GiTrashCan } from "react-icons/gi";
 
 function ProductCategoryList() {
-  const [categories, setCategories] = useState([{}]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     api

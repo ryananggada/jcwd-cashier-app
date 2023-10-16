@@ -3,17 +3,17 @@ import * as yup from "yup";
 import api from "../api";
 import { useSearchParams } from "react-router-dom";
 import { isEmptyArray, useFormik } from "formik";
-import { BsSearch } from "react-icons/bs";
+import { BsArrowLeft, BsArrowRight, BsSearch } from "react-icons/bs";
 
 // import Dashboard from "../components/Dashboard";
 
 function ProductList() {
   const [pageSearch, setPageSearch] = useState(1)
-  const [products, setProducts] = useState([{}]);
+  const [products, setProducts] = useState([]);
   const [productAmount, setProductAmount] = useState(0);
   const [availablePages, setAvailablePages] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [categories, setCategories] = useState([{}]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     setAvailablePages(Math.max(Math.ceil(productAmount / 10), 1));
@@ -23,7 +23,7 @@ function ProductList() {
     api
       .get(`/products/${isNaN(pageSearch) || (pageSearch % 1 !== 0)? 0 :pageSearch - 1}${searchParams.toString() ? "?" : ""}${searchParams.toString()}`)
       .then((res) => {
-        setProducts(res.data.data); // TOLONG
+        setProducts(res.data.data);
         setProductAmount(res.data.amount);
       })
       .catch((err) => {
@@ -79,6 +79,16 @@ function ProductList() {
       setPageSearch(to)
     }
   })
+  function goToNextPage(){
+    if (pageSearch < availablePages){
+      setPageSearch(pageSearch + 1)
+    }
+  }
+  function goToPreviousPage(){
+    if (pageSearch > 1){
+      setPageSearch(pageSearch - 1)
+    }
+  }
   /* 
     const fetchData = async () => {
         try {
@@ -102,10 +112,15 @@ function ProductList() {
               type="text"
               name="nameFilter"
               placeholder="Product Name"
-              className="m-0 py-px rounded-l-full col-span-2 sm:col-span-1"
+              className="m-0 py-px rounded-l-full col-span-2 sm:col-span-1 ring-2 ring-gray-100 ring-inset "
               {...searchForm.getFieldProps("nameFilter")}
             />
-            <select className="m-0 py-px rounded-r-full" name="category" {...searchForm.getFieldProps("category")}>
+            <select 
+              className="m-0 py-px rounded-r-full ring-2 ring-gray-100 ring-inset " 
+              name="category" 
+              {...searchForm.getFieldProps("category")} 
+              defaultValue={searchParams.get("category")}
+            >
               <option className="text-gray-300" value="any">Category...</option>
               {categories.map((cate) => (
                 <option key={cate.id} value={cate.id}>
@@ -148,7 +163,7 @@ function ProductList() {
             <BsSearch />
           </button>
         </form> 
-        <hr/>
+        <hr className="p-1"/>
         { (searchParams.get("category") && categories.find((cate) => cate.id === Number(searchParams.get("category"))))
         ? <div
                 className="pl-1"
@@ -162,12 +177,18 @@ function ProductList() {
             : /** Karena sudah disort, tinggal map saja hasil itemnya. */
               products.map((item) => (
                 <div
-                  className="grid gap-1.5 sm:grid-cols-2 border border-green-400 rounded-sm"
+                  className="grid gap-1.5 p-2 sm:grid-cols-2 border border-green-400 ring-2 ring-green-100 ring-inset rounded-lg"
                   key={item.id}
                 >
-                  <img src={item.image} alt="" className="col-span-2" />
-                  <div className="text-xl font-bold cols">{item.price}</div>
+                  <img src={item.image?`http://localhost:8000/product-image/${item.image}`:""} alt="" className="col-span-2 mx-auto p-0.5" />
                   <div className="text-lg font-semibold">{item.name}</div>
+                  <div className="text-xl font-bold cols">
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(item.price)}
+                  </div>
                   <div>
                     <div className="grid gap-0.5 sm:grid-cols-2">
                       <div>
@@ -196,13 +217,16 @@ function ProductList() {
                     />
                   </label>
                 </div>
-              ))}
-
-          {}
+              ))
+          }
         </section>
       </div>
       <div>
-        Page {pageSearch} of {availablePages}
+        Page 
+        <button onClick={goToPreviousPage}><BsArrowLeft /></button> 
+        {pageSearch} 
+        <button onClick={goToNextPage}><BsArrowRight/></button> 
+        of {availablePages}
       </div>
       <form onSubmit={pageForm.handleSubmit}>
         <label>
