@@ -45,6 +45,7 @@ const CashierSideBar = ({ onMenuItemClick }) => {
               </li>
               <li
                 className={`flex rounded-md p-2 cursor-pointer hover:bg-[#01AB52] text-gray-600 text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-opacity-[90%] hover:rounded-lg`}
+                onClick={() => onMenuItemClick("Products")}
               >
                 <MdOutlineInventory2 className="h-[30px] w-[30px]" />
                 <span className="p-2 rounded-md">Inventory</span>

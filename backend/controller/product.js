@@ -128,6 +128,7 @@ exports.handleGetProductsPage = async (req, res) => {
       offset: 10 * page,
       where: queryStruct,
     });
+
     console.log(count);
     res.status(200).json({
       ok: true,

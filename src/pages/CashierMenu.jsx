@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import CashierSidebar from "../components/CashierSidebar";
 import UserSetting from "./UserSettings";
 import { format } from "date-fns";
+import CashierProducts from "../components/CashierProducts";
 
 export default function CashierMenu() {
   const [activeMenuItem, setActiveMenuItem] = useState("Dashboard");
@@ -38,6 +39,7 @@ export default function CashierMenu() {
         </div>
         <div className="ml-[40px] mt-[10px]">
           {activeMenuItem === "Setting" ? <UserSetting /> : null}
+          {activeMenuItem === "Products" ? <CashierProducts /> : null}
         </div>
       </div>
     </section>
