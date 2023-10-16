@@ -14,7 +14,7 @@ router.post(
   productController.addNewProduct
 );
 router.put(
-  "/",
+  "/:id",
   authMiddleware.tokenValidator,
   authMiddleware.adminValidator,
   multerUpload.single("image"),

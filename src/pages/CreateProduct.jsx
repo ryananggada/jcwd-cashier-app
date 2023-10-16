@@ -99,7 +99,6 @@ function CreateProduct() {
     },
     validationSchema: productSchema,
     onSubmit: (values) => {
-      console.log("asdasd");
       const { name, price, categoryId, description } = values;
       handleAddProduct(
         name,

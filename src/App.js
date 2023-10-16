@@ -6,6 +6,7 @@ import AdminMenu from "./pages/AdminMenu";
 import CashierMenu from "./pages/CashierMenu";
 import CreateProduct from "./pages/CreateProduct";
 import CreateCategory from "./pages/CreateCategory";
+import EditProduct from "./pages/EditProduct";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         {/* TO DO: kalau localStorage.token atau cookies == null harus redirect ke "/" */}
         <Route path="/products/:page" element={<AdminProductList />} />
         <Route path="/product-categories" element={<ProductCategoryList />} />
+        <Route path="/edit-product" element={<EditProduct />} />
         <Route path="/create-product" element={<CreateProduct />} />
         <Route path="/create-category" element={<CreateCategory />} />
         <Route path="/admin" element={<AdminMenu />} />
