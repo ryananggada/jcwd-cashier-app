@@ -12,17 +12,10 @@ module.exports = {
       totalPrice: {
         type: Sequelize.INTEGER,
       },
-      accountId: {
+      userId: {
         type: Sequelize.INTEGER,
         references: {
           model: "Users",
-          key: "id",
-        },
-      },
-      productId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "Products",
           key: "id",
         },
       },

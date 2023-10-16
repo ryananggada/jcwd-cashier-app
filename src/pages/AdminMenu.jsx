@@ -25,9 +25,9 @@ export default function AdminMenu() {
   }, []);
 
   return (
-    <section className="flex flex-row bg-gray-100">
+    <section className="flex flex-row bg-gray-100 w-full">
       <AdminSidebar onMenuItemClick={handleMenuItemClick} />
-      <div className="">
+      <div className="w-full content-center justify-center">
         <div className="ml-[40px] mt-[20px]">
           <span className="text-lg font-bold text-black mr-[30px]">
             {format(currentTime, "HH:mm")}

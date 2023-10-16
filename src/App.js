@@ -6,6 +6,8 @@ import AdminMenu from "./pages/AdminMenu";
 import CashierMenu from "./pages/CashierMenu";
 import CreateProduct from "./pages/CreateProduct";
 import CreateCategory from "./pages/CreateCategory";
+import UserSeting from "./pages/UserSettings";
+import KitchenMenu from "./components/KitchenMenu";
 
 function App() {
   return (
@@ -22,6 +24,7 @@ function App() {
         <Route path="/create-category" element={<CreateCategory />} />
         <Route path="/admin" element={<AdminMenu />} />
         <Route path="/cashier" element={<CashierMenu />} />
+        <Route path="/kitchen" element={<KitchenMenu />} />
       </Routes>
     </>
   );

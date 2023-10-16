@@ -3,7 +3,7 @@ const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 
 exports.createNewCashier = async (req, res, next) => {
-  const { username, password, name } = req.body;
+  const { username, password, name, email } = req.body;
   const existingUser = await User.findOne({
     where: {
       [Op.or]: [{ username: username }],
@@ -24,6 +24,7 @@ exports.createNewCashier = async (req, res, next) => {
     username,
     password: hashedPassword,
     name,
+    email,
     role: "cashier",
   });
 

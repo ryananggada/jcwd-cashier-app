@@ -2,6 +2,7 @@ const router = require("express").Router();
 const authMiddleware = require("../middleware/auth");
 const userController = require("../controller/user");
 const { multerUpload } = require("../lib/multer");
+const authValidator = require("../validator/authValidator");
 
 router.post(
   "/updateprofile",
@@ -13,6 +14,7 @@ router.post(
 router.patch(
   "/updatesettings",
   authMiddleware.tokenValidator,
+  authValidator.updatePasswordValidator,
   userController.updateProfileSettings
 );
 
