@@ -1,5 +1,6 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
+import Cookies from "js-cookie";
 import Dashboard from "../components/Dashboard";
 import api from "../api";
 
@@ -14,7 +15,7 @@ function CreateCategory() {
         },
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwidXNlck5hbWUiOiJSeWFuIiwiaWF0IjoxNjk3MDAzNTgzLCJleHAiOjE2OTcwODk5ODN9.ll9kcx-QJAwnDJkKC6OL_7XXa3EfbVAWNENTrrGzZ-o`,
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         }
       );

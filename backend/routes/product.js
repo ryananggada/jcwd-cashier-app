@@ -5,6 +5,7 @@ const { multerUpload } = require("../lib/multer");
 
 router.get("/", productController.handleGetProducts);
 router.get("/:page", productController.handleGetProductsPage);
+router.get("/single/:id", productController.handleGetSingleProduct);
 router.post(
   "/",
   authMiddleware.tokenValidator,

@@ -1,24 +1,16 @@
 const { Op } = require("sequelize");
-const { Product, Category, sequelize } = require("../models");
+const { Product, sequelize } = require("../models");
 
 exports.addNewProduct = async (req, res) => {
-  const { name, price, category, description } = req.body;
+  const { name, price, categoryId, description } = req.body;
   const filename = req.file ? req.file.filename : null;
 
-
   try {
-    /*
-    const selectedCategory = await Category.findOne({
-      where: { name: category },
-    });
-    */
-
     const newProduct = await Product.create({
       name: name,
       price: price,
       image: filename,
-      category: category,
-      //categoryId: selectedCategory.id,
+      categoryId: categoryId,
       description: description,
       isActive: true,
     });
@@ -35,16 +27,10 @@ exports.addNewProduct = async (req, res) => {
 
 exports.editProduct = async (req, res) => {
   const productId = req.params.id;
-  const { name, price, category, description, isActive } = req.body;
+  const { name, price, categoryId, description, isActive } = req.body;
   const { filename } = req.file;
 
   try {
-    /*
-    const selectedCategory = await Category.findOne({
-      where: { name: category },
-    });
-    */
-
     const product = await Product.findOne({ where: { id: productId } });
     if (!product) {
       res.status(404).json({ ok: false, message: "Product not found" });
@@ -54,11 +40,26 @@ exports.editProduct = async (req, res) => {
     product.name = name;
     product.price = price;
     product.image = filename;
-    product.category = category;
-    //product.categoryId = selectedCategory.id;
+    product.categoryId = categoryId;
     product.description = description;
     product.isActive = isActive;
     await product.save();
+
+    return res.json({ ok: true, data: product });
+  } catch (error) {
+    return res.status(400).json({ ok: false, message: String(error) });
+  }
+};
+
+exports.handleGetSingleProduct = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const product = await Product.findOne({ where: { id } });
+    if (!product) {
+      res.status(404).json({ ok: false, message: "Product not found" });
+      return;
+    }
 
     return res.json({ ok: true, data: product });
   } catch (error) {
@@ -73,13 +74,17 @@ exports.handleGetProducts = async (req, res) => {
     if (!isNaN(category)) {
       queryStruct.categoryId = category;
     }
-    
+
     if (typeof nameFilter === "string") {
       queryStruct.name = { [Op.substring]: nameFilter };
     }
-    const  products = await Product.findAll({
+    const products = await Product.findAll({
       order: sequelize.literal(
-        `${["id", "name", "price", "createdAt"].includes(sortType)? sortType:"createdAt"} ${sortAscend ? "ASC" : "DESC"}`
+        `${
+          ["id", "name", "price", "createdAt"].includes(sortType)
+            ? sortType
+            : "createdAt"
+        } ${sortAscend ? "ASC" : "DESC"}`
       ),
       where: queryStruct,
     });
@@ -112,13 +117,17 @@ exports.handleGetProductsPage = async (req, res) => {
     }
     const { count, rows } = await Product.findAndCountAll({
       order: sequelize.literal(
-        `${["id", "name", "price", "createdAt"].includes(sortType)? sortType:"createdAt"} ${sortAscend ? "ASC" : "DESC"}`
+        `${
+          ["id", "name", "price", "createdAt"].includes(sortType)
+            ? sortType
+            : "createdAt"
+        } ${sortAscend ? "ASC" : "DESC"}`
       ),
       limit: 10,
       offset: 10 * page,
       where: queryStruct,
     });
-    console.log(count)
+    console.log(count);
     res.status(200).json({
       ok: true,
       data: rows,

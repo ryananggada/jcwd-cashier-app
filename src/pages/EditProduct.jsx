@@ -1,23 +1,36 @@
 import { useState, useEffect } from "react";
-import * as yup from "yup";
+import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
-import Dashboard from "../components/Dashboard";
-import api from "../api";
+import * as Yup from "yup";
 import Cookies from "js-cookie";
+import api from "../api";
+import Dashboard from "../components/Dashboard";
 
-function CreateProduct() {
+function EditProduct() {
+  const { productId } = useParams();
+
   const [uploadedImage, setUploadedImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [product, setProduct] = useState();
 
   useEffect(() => {
     const fetchCategories = async () => {
       const response = await api.get("/categories");
-      setCategories(response.data.data);
+      const { data } = response;
+      setCategories(data.data);
+    };
+
+    const fetchProduct = async () => {
+      const response = await api.get(`/products/single/${productId}`);
+      const { data } = response;
+
+      setProduct(data.data);
     };
 
     fetchCategories();
-  }, []);
+    fetchProduct();
+  }, [productId]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -31,30 +44,22 @@ function CreateProduct() {
     }
   };
 
-  const handleAddProduct = async (
+  const handleEditProduct = async (
     name,
     price,
     categoryId,
-    image,
-    description
+    description,
+    isActive
   ) => {
-    console.log({
-      name,
-      price,
-      categoryId,
-      image,
-      description,
-    });
-
     try {
-      const response = await api.post(
-        "/products",
+      const response = await api.put(
+        `/products/${productId}`,
         {
           name,
           price,
           categoryId,
-          image,
           description,
+          isActive,
         },
         {
           headers: {
@@ -66,47 +71,48 @@ function CreateProduct() {
 
       const productData = response.data;
       console.log(productData);
-      window.alert("Adding product success!");
+      window.alert("Editing product success!");
     } catch (error) {
       window.alert("Something went wrong:", error);
       console.log(error);
     }
   };
 
-  const productSchema = yup.object().shape({
-    name: yup
+  const productSchema = Yup.object().shape({
+    name: Yup
       .string()
       .required("Name cannot be empty")
       .min(3, "Minimum length is 3"),
-    price: yup
+    price: Yup
       .number()
       .positive("Price cannot be negative or zero")
       .required("Price cannot be empty"),
-    categoryId: yup.number().integer(),
-    //image: yup.string().required("Image is required"),
-    description: yup
+    categoryId: Yup.number().integer(),
+    description: Yup
       .string()
       .required("Descrption cannot be empty")
       .min(3, "Minimum length is 3"),
+    isActive: Yup.boolean(),
   });
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      price: 0,
-      categoryId: 1,
-      description: "",
+      name: product.name,
+      price: parseInt(product.price, 10),
+      categoryId: product.categoryId,
+      description: product.description,
+      isActive: product.isActive,
     },
     validationSchema: productSchema,
     onSubmit: (values) => {
-      console.log("asdasd");
-      const { name, price, categoryId, description } = values;
-      handleAddProduct(
+      const { name, price, categoryId, description, isActive } = values;
+      handleEditProduct(
         name,
         parseInt(price, 10),
         categoryId,
         imageUrl,
-        description
+        description,
+        isActive
       );
     },
   });
@@ -115,9 +121,7 @@ function CreateProduct() {
     <Dashboard>
       <section>
         <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16">
-          <h2 className="mb-4 text-xl font-bold text-gray-900">
-            Add a new product
-          </h2>
+          <h2 className="mb-4 text-xl font-bold text-gray-900">Edit product</h2>
           <form onSubmit={formik.handleSubmit}>
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
               <div className="sm:col-span-2">
@@ -234,7 +238,7 @@ function CreateProduct() {
                             or drag and drop
                           </p>
                           <p className="text-xs text-gray-500">
-                            SVG, PNG, JPG or GIF (MAX. 800x400px)
+                            GIF, PNG, or JPG, (MAX. 1MB)
                           </p>
                         </>
                       )}
@@ -273,6 +277,21 @@ function CreateProduct() {
                 <div className="text-red-500">{formik.errors.description}</div>
               )}
             </div>
+            <div className="w-full">
+              <input
+                id="remember"
+                type="checkbox"
+                value=""
+                class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 required"
+                {...formik.getFieldProps("categoryId")}
+              />
+              <label
+                for="remember"
+                class="ml-2 text-sm font-medium text-gray-900"
+              >
+                Active
+              </label>
+            </div>
             <button
               type="submit"
               className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-800"
@@ -286,4 +305,4 @@ function CreateProduct() {
   );
 }
 
-export default CreateProduct;
+export default EditProduct;

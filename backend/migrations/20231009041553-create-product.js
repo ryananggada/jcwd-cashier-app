@@ -18,18 +18,12 @@ module.exports = {
       image: {
         type: Sequelize.STRING,
       },
-      category: {
-        type: Sequelize.STRING,
-      },
-      /*
-      CategoryId: {
+      categoryId: {
         type: Sequelize.INTEGER,
         references: {
           model: "Categories",
-          key: "id",
         },
       },
-      */
       description: {
         type: Sequelize.STRING,
       },
