@@ -59,9 +59,6 @@ function ProductCategoryList() {
           },
         }
       );
-      if (res.status !== 200 || res.status !== 201) {
-        throw new Error(res.data);
-      }
       setCategories(categories.concat(res.data.data));
       window.alert("Successfully added category");
     } catch (err) {
@@ -83,9 +80,6 @@ function ProductCategoryList() {
           },
         }
       );
-      if (res.status !== 200) {
-        throw new Error(res.data);
-      }
       const cateIndex = categories.findIndex((item) => item.id === id);
       const cateCopy = [...categories];
       cateCopy.splice(cateIndex, 1, res.data.data);
@@ -103,9 +97,6 @@ function ProductCategoryList() {
           Authorization: `Bearer ${Cookies.get("token")}`,
         },
       });
-      if (res.status !== 200) {
-        throw new Error(res.data);
-      }
       setCategories(categories.filter((item) => item.id !== id));
       window.alert("Successfully deleted category");
     } catch (err) {

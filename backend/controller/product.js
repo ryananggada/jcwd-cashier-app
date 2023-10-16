@@ -75,7 +75,7 @@ exports.handleGetProducts = async (req, res) => {
       queryStruct.categoryId = category;
     }
 
-    if (typeof nameFilter === "string") {
+    if ((typeof nameFilter === "string") && (nameFilter)) {
       queryStruct.name = { [Op.substring]: nameFilter };
     }
     const products = await Product.findAll({
