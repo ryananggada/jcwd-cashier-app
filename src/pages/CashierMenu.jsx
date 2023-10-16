@@ -3,6 +3,7 @@ import CashierSidebar from "../components/CashierSidebar";
 import UserSetting from "./UserSettings";
 import CashierApp from "./CashierApp";
 import { format } from "date-fns";
+import CashierProducts from "../components/CashierProducts";
 
 export default function CashierMenu() {
   const [activeMenuItem, setActiveMenuItem] = useState("Dashboard");
@@ -39,6 +40,7 @@ export default function CashierMenu() {
         </div>
         <div className="ml-[40px] mt-[10px]">
           {activeMenuItem === "Setting" ? <UserSetting /> : null}
+          {activeMenuItem === "Products" ? <CashierProducts /> : null}
           {activeMenuItem === "Dashboard" ? <CashierApp /> : null}
         </div>
       </div>

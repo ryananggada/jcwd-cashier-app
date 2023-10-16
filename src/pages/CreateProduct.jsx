@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
-// import Dashboard from "../components/Dashboard";
 import api from "../api";
 import Cookies from "js-cookie";
 
 function CreateProduct() {
   const [uploadedImage, setUploadedImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -21,7 +19,7 @@ function CreateProduct() {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    setImageUrl(file);
+    formik.setFieldValue("image", file);
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -83,7 +81,17 @@ function CreateProduct() {
       .positive("Price cannot be negative or zero")
       .required("Price cannot be empty"),
     categoryId: yup.number().integer(),
-    //image: yup.string().required("Image is required"),
+    image: yup
+      .mixed()
+      .required("Image is required")
+      .test("fileType", "Invalid file type", (value) => {
+        return (
+          value && ["image/jpeg", "image/png", "image/gif"].includes(value.type)
+        );
+      })
+      .test("fileSize", "File size is too large", (value) => {
+        return value && value.size <= 1 * 1024 * 1024;
+      }),
     description: yup
       .string()
       .required("Descrption cannot be empty")
@@ -95,16 +103,17 @@ function CreateProduct() {
       name: "",
       price: 0,
       categoryId: 1,
+      image: null,
       description: "",
     },
     validationSchema: productSchema,
     onSubmit: (values) => {
-      const { name, price, categoryId, description } = values;
+      const { name, price, categoryId, image, description } = values;
       handleAddProduct(
         name,
         parseInt(price, 10),
         categoryId,
-        imageUrl,
+        image,
         description
       );
     },
@@ -191,14 +200,14 @@ function CreateProduct() {
             </div>
             <div className="sm:col-span-2 mb-6">
               <label
-                htmlFor=""
+                htmlFor="image"
                 className="block mb-2 text-sm font-medium text-gray-900"
               >
                 Upload Product Image
               </label>
               <div className="flex items-center justify-center w-full">
                 <label
-                  htmlFor="dropzone-file"
+                  htmlFor="image"
                   className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 hover:bg-gray-100"
                 >
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -235,13 +244,19 @@ function CreateProduct() {
                       </>
                     )}
                   </div>
-                  <input
-                    id="dropzone-file"
-                    type="file"
-                    className="hidden"
-                    onChange={handleImageUpload}
-                  />
                 </label>
+                <input
+                  id="image"
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+
+                {formik.touched.image && formik.errors.image && (
+                  <div className="text-red-500">{formik.errors.image}</div>
+                )}
               </div>
             </div>
           </div>

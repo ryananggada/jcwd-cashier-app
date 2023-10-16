@@ -76,7 +76,7 @@ exports.handleGetProducts = async (req, res) => {
       queryStruct.categoryId = category;
     }
 
-    if (typeof nameFilter === "string") {
+    if ((typeof nameFilter === "string") && (nameFilter)) {
       queryStruct.name = { [Op.substring]: nameFilter };
     }
     const products = await Product.findAll({
@@ -128,6 +128,7 @@ exports.handleGetProductsPage = async (req, res) => {
       offset: 10 * page,
       where: queryStruct,
     });
+
     console.log(count);
     res.status(200).json({
       ok: true,

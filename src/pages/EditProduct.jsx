@@ -64,7 +64,16 @@ function EditProduct() {
       .positive("Price cannot be negative or zero")
       .required("Price cannot be empty"),
     categoryId: Yup.number().integer(),
-    image: Yup.string().nonNullable(),
+    image: Yup.mixed()
+      .required("Image is required")
+      .test("fileType", "Invalid file type", (value) => {
+        return (
+          value && ["image/jpeg", "image/png", "image/gif"].includes(value.type)
+        );
+      })
+      .test("fileSize", "File size is too large", (value) => {
+        return value && value.size <= 1 * 1024 * 1024;
+      }),
     description: Yup.string()
       .required("Descrption cannot be empty")
       .min(3, "Minimum length is 3"),
@@ -254,6 +263,9 @@ function EditProduct() {
                   />
                 </label>
               </div>
+              {formik.errors.image && formik.touched.image && (
+                <div className="text-red-500">{formik.errors.image}</div>
+              )}
             </div>
           </div>
           <div className="sm:col-span-2">
