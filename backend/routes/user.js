@@ -18,4 +18,10 @@ router.patch(
   userController.updateProfileSettings
 );
 
+router.delete(
+  "/removeprofilepicture",
+  authMiddleware.tokenValidator,
+  userController.removeProfilePicture
+);
+
 module.exports = router;

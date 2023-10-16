@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CashierSidebar from "../components/CashierSidebar";
 import UserSetting from "./UserSettings";
+import CashierApp from "./CashierApp";
 import { format } from "date-fns";
 
 export default function CashierMenu() {
@@ -38,6 +39,7 @@ export default function CashierMenu() {
         </div>
         <div className="ml-[40px] mt-[10px]">
           {activeMenuItem === "Setting" ? <UserSetting /> : null}
+          {activeMenuItem === "Dashboard" ? <CashierApp /> : null}
         </div>
       </div>
     </section>

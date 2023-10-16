@@ -64,3 +64,22 @@ exports.updateProfileSettings = async (req, res) => {
       .json({ ok: false, message: "Internal server error" });
   }
 };
+
+exports.removeProfilePicture = async (req, res) => {
+  const userId = req.user.id;
+
+  const user = await User.findOne({ where: { id: userId } });
+  if (!user) {
+    res.status(404).json({ ok: false, message: "User not found" });
+    return;
+  }
+
+  user.profilePicture = null;
+  await user.save();
+
+  res.json({
+    ok: true,
+    data: user.profilePicture,
+    message: "Profile Picture Successfully Removed",
+  });
+};

@@ -29,12 +29,16 @@ export default function UploadProfilePicture() {
         const formData = new FormData();
         formData.append("profilePicture", values.profilePicture);
         console.log(values);
-        await api.post("/user/updateprofile", formData, {
+        const response = await api.post("/user/updateprofile", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         });
+        if (response.status === 200) {
+          window.alert("Profile picture updated!");
+          window.location.reload();
+        }
       } catch (error) {}
     },
   });
@@ -44,6 +48,23 @@ export default function UploadProfilePicture() {
       formik.setFieldValue("profilePicture", acceptedFiles[0]);
     },
   });
+
+  const handleRemoveProfpic = async (Req, res) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.delete("/user/removeprofilepicture", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 200) {
+        window.alert("Profile picture removed!");
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error removing profile picture:", error);
+    }
+  };
 
   return (
     <>
@@ -77,16 +98,26 @@ export default function UploadProfilePicture() {
       {formik.errors.profilePicture && formik.touched.profilePicture && (
         <div className="text-red-500">{formik.errors.profilePicture}</div>
       )}
-
-      <button
-        type="button"
-        onClick={() => {
-          formik.handleSubmit();
-        }}
-        className="w-1/2 bg-[#01AB52] mt-4 mb-11 text-white font-medium text-lg py-2 rounded-md hover:bg-[#018947] focus:outline-none focus:ring focus:ring-[#018947]"
-      >
-        Upload
-      </button>
+      <div className="justify-evenly flex ">
+        <button
+          type="button"
+          onClick={() => {
+            formik.handleSubmit();
+          }}
+          className=" bg-[#01AB52] mt-4 mb-11 text-white font-medium text-lg py-2 rounded-md hover:bg-[#018947] focus:outline-none focus:ring focus:ring-[#018947] w-[25%]"
+        >
+          Upload
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            handleRemoveProfpic();
+          }}
+          className=" bg-[#01AB52] mt-4 mb-11 text-white font-medium text-lg py-2 rounded-md hover:bg-[#018947] focus:outline-none focus:ring focus:ring-[#018947] w-[25%]"
+        >
+          Remove
+        </button>
+      </div>
     </>
   );
 }

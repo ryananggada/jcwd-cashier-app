@@ -1,30 +1,64 @@
-import React from "react";
-import { PiCoffee, PiHamburgerDuotone, PiCookie } from "react-icons/pi";
-import { IoPricetag } from "react-icons/io5";
+import React, { useState } from "react";
+import FoodsMenu from "./FoodsMenu";
+import DrinksMenu from "./DrinksMenu";
+import SnacksMenu from "./SnacksMenu";
+import ComboMenu from "./ComboMenu";
 
 export default function KitchenMenu() {
+  const [activeMenuItem, setActiveMenuItem] = useState("Drinks");
+  const handleMenuItemClick = (menuItem) => {
+    setActiveMenuItem(menuItem);
+  };
   return (
     <>
-      <section>
-        <div className="justify-evenly flex">
-          <button className="rounded-lg text-[#01AB52] bg-white border border-[#01AB52] p-1 justify-evenly flex">
-            <PiCoffee />
-            <span> Drinks</span>
+      <div className="p-4 ">
+        <div className=" mt-[10px] mb-[30px] flex flex-row items-start justify-start">
+          <button
+            onClick={() => handleMenuItemClick("Drinks")}
+            className={`mr-10 font-bold ${
+              activeMenuItem === "Drinks"
+                ? "text-[#01ab52] underline mb-1"
+                : "text-gray-600"
+            } focus:text-[#01ab52] focus:underline`}
+          >
+            Drinks
           </button>
-          <button className="rounded-lg text-[#01AB52] bg-white border border-[#01AB52] p-1 justify-evenly flex">
-            <PiHamburgerDuotone />
-            <span>Food</span>
+          <button
+            onClick={() => handleMenuItemClick("Foods")}
+            className={`mr-10 font-bold ${
+              activeMenuItem === "Foods"
+                ? "text-[#01ab52] underline"
+                : "text-gray-600"
+            } focus:text-[#01ab52] focus:underline`}
+          >
+            Foods
           </button>
-          <button className="rounded-lg text-[#01AB52] bg-white border border-[#01AB52] p-1 justify-evenly flex">
-            <PiCookie />
-            <span> Snacks</span>
+          <button
+            onClick={() => handleMenuItemClick("Snacks")}
+            className={`mr-10 font-bold ${
+              activeMenuItem === "Snacks"
+                ? "text-[#01ab52] underline"
+                : "text-gray-600"
+            } focus:text-[#01ab52] focus:underline`}
+          >
+            Snacks
           </button>
-          <button className="rounded-lg text-[#01AB52] bg-white border border-[#01AB52] p-1 justify-evenly flex">
-            <IoPricetag />
-            <span> Combo</span>
+          <button
+            onClick={() => handleMenuItemClick("Combo")}
+            className={`mr-10 font-bold ${
+              activeMenuItem === "Combo"
+                ? "text-[#01ab52] underline"
+                : "text-gray-600"
+            } focus:text-[#01ab52] focus:underline`}
+          >
+            Combo
           </button>
         </div>
-      </section>
+        {activeMenuItem === "Foods" ? <FoodsMenu /> : null}
+        {activeMenuItem === "Drinks" ? <DrinksMenu /> : null}
+        {activeMenuItem === "Snacks" ? <SnacksMenu /> : null}
+        {activeMenuItem === "Combo" ? <ComboMenu /> : null}
+      </div>
     </>
   );
 }

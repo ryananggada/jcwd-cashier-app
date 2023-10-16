@@ -1,57 +1,57 @@
-// import React from "react";
+import React, { useState } from "react";
+import KitchenMenu from "../components/KitchenMenu";
+import GroceriesMenu from "../components/GroceriesMenu";
+import { GrRestaurant } from "react-icons/gr";
+import { LiaShoppingBasketSolid } from "react-icons/lia";
 
-// export default function CashierApp() {
-//   return (
-//     <div className="p-4">
-//       <h1 className="text-2xl font-semibold text-[#01AB52] mb-4">
-//         Products Control Panel
-//       </h1>
-//       <div className=" mt-[10px] mb-[30px] flex flex-row items-start justify-start">
-//         <button
-//           onClick={() => handleMenuItemClick("GetAllProducts")}
-//           className={`mr-10 font-bold ${
-//             activeMenuItem === "GetAllProducts"
-//               ? "text-[#01ab52] underline mb-1"
-//               : "text-gray-600"
-//           } focus:text-[#01ab52] focus:underline`}
-//         >
-//           View All Products
-//         </button>
-//         <button
-//           onClick={() => handleMenuItemClick("ProductsByCategory")}
-//           className={`mr-10 font-bold ${
-//             activeMenuItem === "ProductsByCategory"
-//               ? "text-[#01ab52] underline"
-//               : "text-gray-600"
-//           } focus:text-[#01ab52] focus:underline`}
-//         >
-//           View Products by Category
-//         </button>
-//         <button
-//           onClick={() => handleMenuItemClick("AddNewProduct")}
-//           className={`mr-10 font-bold ${
-//             activeMenuItem === "AddNewProduct"
-//               ? "text-[#01ab52] underline"
-//               : "text-gray-600"
-//           } focus:text-[#01ab52] focus:underline`}
-//         >
-//           Add Product
-//         </button>
-//         <button
-//           onClick={() => handleMenuItemClick("AddNewCategory")}
-//           className={`mr-10 font-bold ${
-//             activeMenuItem === "AddNewCategory"
-//               ? "text-[#01ab52] underline"
-//               : "text-gray-600"
-//           } focus:text-[#01ab52] focus:underline`}
-//         >
-//           Add Category
-//         </button>
-//       </div>
-//       {activeMenuItem === "GetAllProducts" ? <ProductList /> : null}
-//       {activeMenuItem === "ProductsByCategory" ? <ProductByCategory /> : null}
-//       {activeMenuItem === "AddNewProduct" ? <CreateProduct /> : null}
-//       {activeMenuItem === "AddNewCategory" ? <CreateCategory /> : null}
-//     </div>
-//   );
-// }
+export default function CashierApp() {
+  const [activeMenuItem, setActiveMenuItem] = useState("Drinks");
+  const handleMenuItemClick = (menuItem) => {
+    setActiveMenuItem(menuItem);
+  };
+  return (
+    <>
+      <div className="p-4 bg-white border shadow-md rounded-lg">
+        <div className=" mt-[10px] mb-[30px] flex flex-row items-start justify-start">
+          <div
+            onClick={() => handleMenuItemClick("Kitchen")}
+            className={`mr-10 font-bold cursor-pointer flex items-center text-lg ${
+              activeMenuItem === "Kitchen"
+                ? "text-[#01ab52] underline mb-1"
+                : "text-gray-600"
+            } focus:text-[#01ab52] focus:underline`}
+          >
+            <GrRestaurant
+              className={`text-lg mr-2 h-[30px] w-[30px] ${
+                activeMenuItem === "Kitchen"
+                  ? "text-[#01ab52] underline"
+                  : "text-gray-600"
+              }`}
+            />
+            <span>Kitchen</span>
+          </div>
+
+          <div
+            onClick={() => handleMenuItemClick("Groceries")}
+            className={`mr-10 font-bold cursor-pointer flex items-center text-lg ${
+              activeMenuItem === "Groceries"
+                ? "text-[#01ab52] underline mb-1"
+                : "text-gray-600"
+            } focus:text-[#01ab52] focus:underline`}
+          >
+            <LiaShoppingBasketSolid
+              className={`h-[30px] w-[30px] mr-2 ${
+                activeMenuItem === "Groceries"
+                  ? "text-[#01ab52] underline"
+                  : "text-gray-600"
+              }`}
+            />
+            <span>Groceries</span>
+          </div>
+        </div>
+        {activeMenuItem === "Kitchen" ? <KitchenMenu /> : null}
+        {activeMenuItem === "Groceries" ? <GroceriesMenu /> : null}
+      </div>
+    </>
+  );
+}

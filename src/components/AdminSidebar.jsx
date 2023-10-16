@@ -40,10 +40,10 @@ const AdminSideBar = ({ onMenuItemClick }) => {
           </div>
           <div className="mt-8">
             <ul>
-              <li className="flex rounded-md p-2 cursor-pointer hover:bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg">
+              {/* <li className="flex rounded-md p-2 cursor-pointer hover:bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg">
                 <MdDashboard className="h-[30px] w-[30px]" />
                 <span className="p-2 rounded-md">Dashboard</span>
-              </li>
+              </li> */}
               <li
                 className="flex rounded-md p-2 cursor-pointer hover.bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg"
                 onClick={toggleReportMenu}
