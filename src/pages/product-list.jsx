@@ -4,7 +4,6 @@ import api from "../api";
 import { useSearchParams } from "react-router-dom";
 import { isEmptyArray, useFormik } from "formik";
 import { BsSearch } from "react-icons/bs";
-import { TbArrowBigLeftLines, TbArrowBigRightLines } from "react-icons/tb";
 
 // import Dashboard from "../components/Dashboard";
 
