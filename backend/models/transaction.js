@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
         through: "TransactionItem",
         foreignKey: "transactionId",
       });
+      Transaction.hasMany(models.TransactionItem, {
+        foreignKey: "transactionId",
+      });
     }
   }
   Transaction.init(

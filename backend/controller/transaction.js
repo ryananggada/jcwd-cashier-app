@@ -30,7 +30,7 @@ exports.getAllTransaction = async (req, res) => {
   const transactions = await Transaction.findAll({
     include: {
       model: TransactionItem,
-      include: "product",
+      as: "TransactionItems", // Use the correct alias
     },
   });
 

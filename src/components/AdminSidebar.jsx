@@ -53,12 +53,18 @@ const AdminSideBar = ({ onMenuItemClick }) => {
               </li>
               {isReportExpanded && (
                 <>
-                  <li className="flex rounded-md p-2 cursor-pointer hover.bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg">
+                  <li
+                    onClick={() => onMenuItemClick("SalesReport")}
+                    className="flex rounded-md p-2 cursor-pointer hover.bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg"
+                  >
                     {/* Add Sales Report Icon */}
                     <TbReportMoney className="h-[20px] w-[20px]" />
                     <span className="p-2 rounded-md">Sales Report</span>
                   </li>
-                  <li className="flex rounded-md p-2 cursor-pointer hover.bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg">
+                  <li
+                    onClick={() => onMenuItemClick("Transaction")}
+                    className="flex rounded-md p-2 cursor-pointer hover.bg-light-white text-white text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-white hover:bg-opacity-10 hover:rounded-lg"
+                  >
                     {/* Add Transaction Icon */}
                     <PiCalculatorThin className="h-[20px] w-[20px]" />
                     <span className="p-2 rounded-md">Transaction</span>

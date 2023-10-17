@@ -12,7 +12,7 @@ const TransactionSidebar = ({ cart, onCheckout, onSplitBill, onDelete }) => {
   //   const grandTotal = subtotal - discount + tax;
 
   return (
-    <div className="transaction-sidebar bg-white">
+    <div className="transaction-sidebar bg-white rounded-md mx-3 p-5">
       <h2>Transaction</h2>
       <ul>
         {/* {cart.map((item) => (

@@ -3,6 +3,8 @@ import AdminSidebar from "../components/AdminSidebar";
 import CashierControlPanel from "./CashierControlPanel";
 import UserSetting from "./UserSettings";
 import ProductControlPanel from "./ProductControlPanel";
+import SalesReport from "./SalesReport";
+import Transaction from "./Transaction";
 import { format } from "date-fns";
 
 export default function AdminMenu() {
@@ -39,6 +41,8 @@ export default function AdminMenu() {
         <div className="ml-[40px] mt-[10px]">
           {activeMenuItem === "Cashier" ? <CashierControlPanel /> : null}
           {activeMenuItem === "Setting" ? <UserSetting /> : null}
+          {activeMenuItem === "SalesReport" ? <SalesReport /> : null}
+          {activeMenuItem === "Transaction" ? <Transaction /> : null}
           {activeMenuItem === "ProductControlPanel" ? (
             <ProductControlPanel />
           ) : null}

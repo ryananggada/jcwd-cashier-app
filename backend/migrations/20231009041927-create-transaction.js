@@ -19,6 +19,9 @@ module.exports = {
           key: "id",
         },
       },
+      transactionDate: {
+        type: Sequelize.DATEONLY,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
