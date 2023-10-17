@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import api from "../api";
+import { useParams } from "react-router-dom";
 
 function EditProduct() {
   const { productId } = useParams();
@@ -30,7 +30,7 @@ function EditProduct() {
   ) => {
     try {
       const response = await api.put(
-        `/products/1`,
+        `/products/${productId}`,
         {
           name,
           price,
@@ -111,7 +111,7 @@ function EditProduct() {
     };
 
     const fetchProduct = async () => {
-      const response = await api.get(`/products/single/1`);
+      const response = await api.get(`/products/single/${productId}`);
       const { data } = response;
 
       formik.setValues({

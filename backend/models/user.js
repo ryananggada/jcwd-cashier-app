@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       profilePicture: DataTypes.STRING,
       role: DataTypes.ENUM("admin", "cashier"),
       isActive: DataTypes.BOOLEAN,
+      resetToken: DataTypes.STRING,
+      resetTokenExpired: DataTypes.DATE,
+      passwwordUpdatedAt: DataTypes.DATE,
     },
     {
       sequelize,

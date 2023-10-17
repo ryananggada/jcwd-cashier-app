@@ -152,7 +152,7 @@ function CashierProducts() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {products.map((product) => {
-          return (
+          return product.isActive ? (
             <div className="w-full max-w-[200px] m-3 p-3 bg-white border border-gray-200 rounded-lg shadow flex flex-col items-center">
               <img
                 className="justify-center items-center max-h-36"
@@ -171,6 +171,8 @@ function CashierProducts() {
                 }).format(product.price)}
               </span>
             </div>
+          ) : (
+            <></>
           );
         })}
       </div>
@@ -183,13 +185,13 @@ function CashierProducts() {
 
         <div class="inline-flex mt-2 xs:mt-0">
           <button
-            class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900"
             onClick={handlePrevPage}
           >
             Prev
           </button>
           <button
-            class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-l border-gray-700 rounded-r hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-l border-gray-700 rounded-r hover:bg-gray-900"
             onClick={handleNextPage}
           >
             Next
