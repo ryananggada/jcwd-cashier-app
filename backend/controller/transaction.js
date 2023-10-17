@@ -1,19 +1,19 @@
-const Transaction = require("../models/transaction");
-const TransactionItem = require("../models/transactionitem");
+const { Transaction, TransactionItem } = require("../models");
 
 exports.handleNewTransaction = async (req, res) => {
-  const { products } = req.body;
+  const { products, totalPrice } = req.body;
   const userId = req.user.id;
   const transaction = await Transaction.create({
     userId,
+    totalPrice,
   });
 
   const transactionItems = products.map((product) => {
+    console.log(product);
     return {
       transactionId: transaction.id,
       productId: product.id,
       quantity: product.quantity,
-      price: product.price,
     };
   });
 
