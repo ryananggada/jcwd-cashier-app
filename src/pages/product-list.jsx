@@ -4,6 +4,7 @@ import api from "../api";
 import { useSearchParams } from "react-router-dom";
 import { isEmptyArray, useFormik } from "formik";
 import { BsArrowLeft, BsArrowRight, BsSearch } from "react-icons/bs";
+import Cookies from "js-cookie";
 
 // import Dashboard from "../components/Dashboard";
 
@@ -48,14 +49,14 @@ function ProductList() {
     nameFilter: yup.string(),
     category: yup.string(),
     sortType: yup.string(),
-    sortAscend: yup.number().required().integer().min(0).max(1) // bool
+    sortAscend: yup.string()
   })
   const searchForm = useFormik({
     initialValues: {
       nameFilter: "",
       category: "",
       sortType: "",
-      sortAscend: 0
+      sortAscend: ""
     },
     validationSchema: searchSchema,
     onSubmit: (values) => {
@@ -89,18 +90,36 @@ function ProductList() {
       setPageSearch(pageSearch - 1)
     }
   }
-  /* 
-    const fetchData = async () => {
-        try {
-            const res = await api.get(`/products/${page}?SortByPrice=${searchParams.get(sortByPrice)}&sortAscend=${searchParams.get(sortAscend)}&category=${searchParams.get(categoryFilter)}&nameFilter=${searchParams.get(nameFilter)}`)
-            setProducts(res.data)
-            setProductAmount(res.itemAmount)
-        } catch(err) {
-            window.alert("Failed to load product data")
-            console.log(err)
+
+  async function toggleActiveById(id) {
+    const productIndex = products.findIndex((product) => product.id === id)
+    let { name, price, categoryId, description, isActive} = products[productIndex]
+    isActive = !isActive
+    try {
+      const res = await api.put(
+        `/products/${id}`,
+        {
+          name,
+          price,
+          categoryId,
+          description,
+          isActive
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
         }
-    } 
-  */
+      )
+      const productCopy = [...products]
+      productCopy.splice(productIndex, 1, res.data.data)
+      setProducts(productCopy)
+      window.alert("Successfully edited product")
+    } catch (err) {
+      window.alert("Failed to edit product");
+      console.log(err);
+    }
+  }
 
   return (
     // <Dashboard>
@@ -130,7 +149,12 @@ function ProductList() {
             </select>
           </div>
           Sort by{" "}
-          {/*Date of creation <input type="radio" name="sortType" value="createdAt"/> */}
+          {/*
+          Date of creation 
+          <input 
+            type="radio" name="sortType" value="createdAt" onChange={() => searchForm.setFieldValue("sortType", "createdAt", true)}
+          /> 
+          */}
           Name <input 
             type="radio" 
             name="sortType" 
@@ -148,13 +172,13 @@ function ProductList() {
             name="sortAscend" 
             value="0" 
             defaultChecked={true}
-            onChange={() => searchForm.setFieldValue("sortAscend", 0, true)}
+            onChange={() => searchForm.setFieldValue("sortAscend", "", true)}
           />
           Ascending <input 
             type="radio" 
             name="sortAscend" 
             value="1" 
-            onChange={() => searchForm.setFieldValue("sortAscend", 1, true)}
+            onChange={() => searchForm.setFieldValue("sortAscend", "1", true)}
           />
           <button
             className="items-center p-1 border-2 border-green-300 rounded-full hover:border-green-400 hover:bg-green-50"
@@ -213,7 +237,8 @@ function ProductList() {
                     <input
                       type="checkbox"
                       name={`activeId${item.id}`}
-                      defaultChecked={item.isActive}
+                      checked={item.isActive}
+                      onChange={() => toggleActiveById(item.id)}
                     />
                   </label>
                 </div>
