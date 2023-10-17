@@ -7,6 +7,7 @@ import CashierMenu from "./pages/CashierMenu";
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
 import CreateCategory from "./pages/CreateCategory";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/admin/edit/:productId" element={<EditProduct />} />
         <Route path="/admin" element={<AdminMenu />} />
         <Route path="/cashier" element={<CashierMenu />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Routes>
     </>
   );

@@ -4,6 +4,7 @@ const { User } = require("../models");
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const crypto = require("crypto");
 const sendEmail = require("../utilities/email");
+const { Op } = require("sequelize");
 
 exports.loginHandler = async (req, res) => {
   const { username, password } = req.body;
@@ -76,8 +77,8 @@ exports.forgotPassword = async (req, res, next) => {
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
-    const resetTokenExpired = new Date(Date.now() + 10 * 60 * 1000);
-
+    const resetTokenExpired = new Date();
+    resetTokenExpired.setTime(resetTokenExpired.getTime() + 10 * 60 * 1000);
     await User.update(
       {
         resetToken: resetTokenHash,
@@ -90,9 +91,7 @@ exports.forgotPassword = async (req, res, next) => {
       }
     );
 
-    const resetUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/auth/reset-password/${resetToken}`;
+    const resetUrl = `${req.protocol}://localhost:3000/reset-password/${resetTokenHash}`;
     const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetUrl}\nIf you didn't forget your password, please ignore this email!`;
     try {
       await sendEmail({
@@ -124,14 +123,11 @@ exports.forgotPassword = async (req, res, next) => {
 exports.resetPassword = async (req, res, next) => {
   const { newPassword, confirmPassword } = req.body;
   try {
-    const token = crypto
-      .createHash("sha256")
-      .update(req.params.token)
-      .digest("hex");
-
     const user = await User.findOne({
-      passwordResetToken: token,
-      passwordResetExpires: { $gt: Date.now() },
+      where: {
+        resetToken: req.params.token,
+        resetTokenExpired: { [Op.gt]: new Date() },
+      },
     });
 
     if (!user) {
@@ -152,9 +148,8 @@ exports.resetPassword = async (req, res, next) => {
     const hashedPassword = bcrypt.hashSync(newPassword, salt);
 
     user.password = hashedPassword;
-    user.confirmPassword = hashedPassword;
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
+    user.resetToken = null;
+    user.resetTokenExpired = null;
 
     await user.save();
 
