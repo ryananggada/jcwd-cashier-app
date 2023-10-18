@@ -26,18 +26,21 @@ export function TransactionSaleItem({data}){
       </button>
       { showProducts
         ?
-        <div>
-          {data.TransactionItems.map((item) => (
-            <ProductSaleInTransaction data={item} key={item}/>
-          ))}
-        </div> 
+        <>
+          <hr/>
+          <div>
+            {data.TransactionItems.map((item) => (
+              <ProductSaleInTransaction data={item} key={item}/>
+            ))}
+          </div> 
+        </>
         : <></>
       }
   </div>)
 }
 
 export function ProductSaleInTransaction({data}){
-  return(<div>
+  return(<div className="border border-gray-400 rounded-[2px]">
     {`${data.product.name} `}
     <span className="text-lg font-bold cols">
       {new Intl.NumberFormat("id-ID", {

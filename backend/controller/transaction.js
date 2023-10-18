@@ -53,7 +53,7 @@ exports.getTransactionById = async (req, res) => {
     where: { id },
     include: {
       model: TransactionItem,
-      include: "product",
+      include: Product,
     },
   });
 
