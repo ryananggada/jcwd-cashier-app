@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
       });
       Product.hasMany(models.TransactionItem, {
         foreignKey: "productId",
-        as: "TransactionItemData",
       });
     }
   }
