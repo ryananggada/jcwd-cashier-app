@@ -9,6 +9,7 @@ export function TransactionSaleItem({data}){
     setShowProducts(!showProducts)
   }
   return (<div className="border border-gray-400 rounded-[2px]">
+    {`${data.id} `}
       <span className="text-xl font-bold cols">
         {`${new Intl.NumberFormat("id-ID", {
           style: "currency",
@@ -16,10 +17,7 @@ export function TransactionSaleItem({data}){
           minimumFractionDigits: 0,
         }).format(data.totalPrice)} `}
       </span>
-      Created at {data.transactionDate}
-      {/*<span>
-        by Cashier // Logika untuk Mengambil data user dengan user ID tertentu.
-      </span>*/}
+      {`Created at ${data.transactionDate} by ${data.User.name}`}
       <br/>
       <button onClick={toggleShowProducts}>
         {`${showProducts ? "Hide" : "Show"} Bought Products`}
@@ -28,9 +26,9 @@ export function TransactionSaleItem({data}){
         ?
         <>
           <hr/>
-          <div>
+          <div className="grid gap-1.5 sm:grid-cols-2 m-[1px] p-[1px]">
             {data.TransactionItems.map((item) => (
-              <ProductSaleInTransaction data={item} key={item}/>
+              <ProductSaleInTransaction data={item} key={item.id}/>
             ))}
           </div> 
         </>
@@ -41,13 +39,13 @@ export function TransactionSaleItem({data}){
 
 export function ProductSaleInTransaction({data}){
   return(<div className="border border-gray-400 rounded-[2px]">
-    {`${data.product.name} `}
+    {`${data.Product.name} `}
     <span className="text-lg font-bold cols">
       {new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
         minimumFractionDigits: 0,
-      }).format(data.product.price)}
+      }).format(data.Product.price)}
     </span>
     <div >
     {`Amount : ${data.quantity}`}

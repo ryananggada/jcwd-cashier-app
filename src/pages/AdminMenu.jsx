@@ -3,7 +3,7 @@ import AdminSidebar from "../components/AdminSidebar";
 import CashierControlPanel from "./CashierControlPanel";
 import UserSetting from "./UserSettings";
 import ProductControlPanel from "./ProductControlPanel";
-import SalesReport from "./SalesReport";
+import SalesReport from "../components/sales-menu";
 import Transaction from "./Transaction";
 import { format } from "date-fns";
 
