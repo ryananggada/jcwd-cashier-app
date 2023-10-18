@@ -33,6 +33,12 @@ exports.getAllTransaction = async (req, res) => {
       {
         model: TransactionItem,
         as: "TransactionItems", // Use the correct alias
+        include: [
+          {
+            model: Product,
+            as: "Product",
+          },
+        ],
       },
       {
         model: User,
