@@ -32,7 +32,7 @@ exports.getAllTransaction = async (req, res) => {
     include: {
       model: TransactionItem,
       as: "TransactionItems", // Use the correct alias
-      include: "product"
+      include: Product
     },
   });
 
@@ -48,7 +48,7 @@ exports.getTransactionById = async (req, res) => {
     where: { id },
     include: {
       model: TransactionItem,
-      include: "product",
+      include: Product,
     },
   });
 
