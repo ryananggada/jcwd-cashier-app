@@ -1,4 +1,5 @@
-const { Transaction, TransactionItem } = require("../models");
+const { Model } = require("sequelize");
+const { Transaction, TransactionItem, Product } = require("../models");
 
 exports.handleNewTransaction = async (req, res) => {
   const { products, totalPrice } = req.body;
@@ -31,6 +32,7 @@ exports.getAllTransaction = async (req, res) => {
     include: {
       model: TransactionItem,
       as: "TransactionItems", // Use the correct alias
+      include: "product"
     },
   });
 

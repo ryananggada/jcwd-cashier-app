@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const { Product, sequelize } = require("../models");
+const { Product, TransactionItem, sequelize } = require("../models");
 
 exports.addNewProduct = async (req, res) => {
   const { name, price, categoryId, description } = req.body;
@@ -101,6 +101,45 @@ exports.handleGetProducts = async (req, res) => {
     });
   }
 };
+
+exports.handleGetProductsSales = async (req, res) => {
+  const { sortType, sortAscend, category, nameFilter } = req.query;
+  try {
+    const queryStruct = {};
+    if (!isNaN(category) && (category)) {
+      queryStruct.categoryId = category;
+    }
+
+    if ((typeof nameFilter === "string") && (nameFilter)) {
+      queryStruct.name = { [Op.substring]: nameFilter };
+    }
+    const products = await Product.findAll({
+      order: sequelize.literal(
+        `${
+          ["id", "name", "price", "createdAt"].includes(sortType)
+            ? sortType
+            : "createdAt"
+        } ${sortAscend ? "ASC" : "DESC"}`
+      ),
+      where: queryStruct,
+      include: {
+        model: TransactionItem,
+        as: "TransactionItemData"
+      }
+    });
+    res.status(200).json({
+      ok: true,
+      data: products,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      ok: false,
+      message: err.message,
+    });
+  }
+};
+
 
 exports.handleGetProductsPage = async (req, res) => {
   const { page } = req.params;
