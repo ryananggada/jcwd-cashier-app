@@ -49,7 +49,9 @@ export function TransactionSaleItem({data}){
 
 export function ProductSaleInTransaction({data}){
   return(<div className="border border-gray-400 rounded-[2px]">
-    {`${data.Product.name} `}
+    <span className="text-gray-700">
+     {`${data.Product.name} `}
+    </span>
     <span className="text-lg font-bold cols">
       {new Intl.NumberFormat("id-ID", {
         style: "currency",
@@ -57,8 +59,11 @@ export function ProductSaleInTransaction({data}){
         minimumFractionDigits: 0,
       }).format(data.Product.price)}
     </span>
-    <div >
-    {`Amount : ${data.quantity}`}
+    <div>
+      Amount : 
+      <span className="text-gray-700">
+        {` ${data.quantity}`}
+      </span>
     </div>
   </div>)
 }
