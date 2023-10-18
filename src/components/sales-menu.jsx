@@ -28,7 +28,7 @@ export function TransactionSaleItem({data}){
           <hr/>
           <div className="grid gap-1.5 sm:grid-cols-2 m-[1px] p-[1px]">
             {data.TransactionItems.map((item) => (
-              <ProductSaleInTransaction data={item} key={item}/>
+              <ProductSaleInTransaction data={item} key={item.id}/>
             ))}
           </div> 
         </>
