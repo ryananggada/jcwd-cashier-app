@@ -3,40 +3,87 @@ import { default as api } from "../api"
 import Cookies from "js-cookie"
 
 export function TransactionSaleItem({data}){
-  return (<div>
-    <div className="text-xl font-bold cols">
-      {new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-      }).format(data.totalPrice)}
-    </div>
-    <div>
+  const [showProducts, setShowProducts] = useState(false)
+
+  function toggleShowProducts() {
+    setShowProducts(!showProducts)
+  }
+  return (<div className="border border-gray-400 rounded-[2px]">
+      <span className="text-xl font-bold cols">
+        {`${new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          minimumFractionDigits: 0,
+        }).format(data.totalPrice)} `}
+      </span>
       Created at {data.transactionDate}
       {/*<span>
         by Cashier // Logika untuk Mengambil data user dengan user ID tertentu.
       </span>*/}
-    </div>
-    <div>
-      Bought items:
-      {data.transactionItems.map((item) => (
-        <ProductSale data={item}/>
-      ))}
-    </div>
+      <br/>
+      <button onClick={toggleShowProducts}>
+        {`${showProducts ? "Hide" : "Show"} Bought Products`}
+      </button>
+      { showProducts
+        ?
+        <div>
+          {data.TransactionItems.map((item) => (
+            <ProductSaleInTransaction data={item} key={item}/>
+          ))}
+        </div> 
+        : <></>
+      }
   </div>)
 }
 
-export function ProductSale({data}){
-
+export function ProductSaleInTransaction({data}){
+  return(<div>
+    {`${data.product.name} `}
+    <span className="text-lg font-bold cols">
+      {new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(data.product.price)}
+    </span>
+    <div >
+    {`Amount : ${data.quantity}`}
+    </div>
+  </div>)
 }
+/*
+export function ProductSale({data}){
+  return(<div>
+    {`${data.name} `}
+    <span className="text-xl font-bold cols">
+      {new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(data.price)}
+    </span>
+    <div>
+      // Bisa diadd ke query di backendnya sih, tapi males OMEGALUL
+    {`Total Sold: ${
+      data.TransactionItemData.reduce((accum, transactionItem) => {
+        return accum + transactionItem.quantity
+      }, 0)
+    }`}
+    </div>
+  </div>)
+}
+*/
 
 export default function SalesMenu(){
   const [transactions, setTransactions] = useState([])
-  //const [users, setUsers] = useState([]) // Data user mustahil diambil.
+  //const [products, setProducts] = useState([])
+  //const [currentPage, setCurrentPage] = useState(1)
+  //const [itemsPerPage] = useState(10)
+  //const [cashiers, setCashiers] = useState([]) // Gunakan backend querying
   
   useEffect(() => {
-    api.
-      get(
+    api
+      .get(
         "/transaction/all",
         {
           headers: {
@@ -44,28 +91,8 @@ export default function SalesMenu(){
           }
         }
       ).then((res) => {
-        // Tidak perlu fetch data berulang kali, data produk bisa diambil dari transactionItem karena sudah di eager-load di backendnya
-        //const transactionsCopy = res.data.data 
+        // Cukup ambil data yang sudah disortir di sisi backendnya
         setTransactions(res.data.data)
-        
-        
-        /* 
-        // Masalahnya...
-        let productCopy = []
-        for (v in transactionsCopy) {
-          // polynom
-          if (Boolean(productCopy.find((existingItem) => {
-            Boolean(v.transactionItems.find((newItem => (newItem.productId === existingItem.id))))
-          }))){
-            let itemCopy = v.transactionItems.product
-            itemCopy.totalSales = 
-            productCopy.concat()
-          }
-        }
-        setProducts(productCopy) 
-        */
-        
-
       })
       .catch((err) => {
         window.alert("Failed to get transaction data");
@@ -73,11 +100,17 @@ export default function SalesMenu(){
       })
   }, [])
 
+
+
   return (<>
-    {
-      transactions.map((item) => (
-        <TransactionSaleItem data={item}/>
-      ))
-    }
+  <section>
+    Sales Report
+    <hr/>
+    <div className="grid gap-1.5 sm:grid-cols-2">
+      {transactions.map((item) => (
+        <TransactionSaleItem data={item} key={item.id}/>
+      ))}
+    </div>
+  </section>
   </>)
 }
