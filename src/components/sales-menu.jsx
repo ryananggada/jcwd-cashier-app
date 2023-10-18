@@ -8,7 +8,7 @@ export function TransactionSaleItem({data}){
   function toggleShowProducts() {
     setShowProducts(!showProducts)
   }
-  return (<div className="border border-gray-400 rounded-[2px]">
+  return (<div className="border border-gray-400 rounded-[2px] p-[1px]">
     {`${data.id} `}
       <span className="text-xl font-bold cols">
         {`${new Intl.NumberFormat("id-ID", {
@@ -17,9 +17,19 @@ export function TransactionSaleItem({data}){
           minimumFractionDigits: 0,
         }).format(data.totalPrice)} `}
       </span>
-      {`Created at ${data.transactionDate} by ${data.User.name}`}
+      Created at{" "}
+      <span className="text-gray-700">
+        {data.transactionDate}
+      </span> 
+      {" "}by{" "}
+      <span className="text-gray-700">
+        {data.User.name}
+      </span>
       <br/>
-      <button onClick={toggleShowProducts}>
+      <button 
+        className="items-center px-1 py-1 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 sm:cols-span-2"
+        onClick={toggleShowProducts}
+      >
         {`${showProducts ? "Hide" : "Show"} Bought Products`}
       </button>
       { showProducts
@@ -107,7 +117,7 @@ export default function SalesMenu(){
   <section>
     Sales Report
     <hr/>
-    <div className="grid gap-1.5 sm:grid-cols-2">
+    <div className="grid gap-1.5 sm:grid-cols-2 p-[1px]">
       {transactions.map((item) => (
         <TransactionSaleItem data={item} key={item.id}/>
       ))}
