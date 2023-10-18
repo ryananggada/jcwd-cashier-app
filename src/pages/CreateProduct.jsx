@@ -107,7 +107,7 @@ function CreateProduct() {
       description: "",
     },
     validationSchema: productSchema,
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       const { name, price, categoryId, image, description } = values;
       handleAddProduct(
         name,
@@ -116,6 +116,16 @@ function CreateProduct() {
         image,
         description
       );
+      resetForm({
+        values: {
+          name: "",
+          price: 0,
+          categoryId: 1,
+          image: null,
+          description: "",
+        },
+      });
+      setUploadedImage(null);
     },
   });
 
