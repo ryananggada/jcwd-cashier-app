@@ -76,28 +76,40 @@ function CashierTransaction() {
           })}
         </div>
         <div className="w-5/12">
-          <h1 className="text-2xl font-bold">Orders</h1>
+          <h1 className="text-2xl font-bold my-2">Orders</h1>
           {cartItems.map((item) => {
             return (
-              <div>
-                <h1>{item.name}</h1>
-                <p>
-                  {new Intl.NumberFormat("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
-                    minimumFractionDigits: 0,
-                  }).format(item.price)}
-                </p>
-                <p>{item.quantity}</p>
-                <button onClick={() => dispatch(removeFromCart(item))}>
-                  -
-                </button>
-                <button onClick={() => dispatch(addToCart(item))}>+</button>
+              <div className="flex space-between justify-center items-center gap-8 max-w-sm p-4 my-4 bg-white border border-gray-200 rounded-lg shadow">
+                <div>
+                  <h1>{item.name}</h1>
+                  <p>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(item.price)}
+                  </p>
+                </div>
+                <p className="text-xl">{item.quantity}</p>
+                <div>
+                  <button
+                    className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
+                    onClick={() => dispatch(removeFromCart(item))}
+                  >
+                    -
+                  </button>
+                  <button
+                    className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
+                    onClick={() => dispatch(addToCart(item))}
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             );
           })}
           <h2>
-            Total Price{" "}
+            Total Price:{" "}
             {new Intl.NumberFormat("id-ID", {
               style: "currency",
               currency: "IDR",
@@ -109,7 +121,12 @@ function CashierTransaction() {
               }, 0)
             )}
           </h2>
-          <button onClick={handleAddTransaction}>Checkout</button>
+          <button
+            className="my-4 focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2"
+            onClick={handleAddTransaction}
+          >
+            Checkout
+          </button>
         </div>
       </div>
     </section>

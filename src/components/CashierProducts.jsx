@@ -79,7 +79,6 @@ function CashierProducts() {
   return (
     <>
       <div>
-        <p>Filter</p>
         <form>
           <p>By category</p>
           <select
