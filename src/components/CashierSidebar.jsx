@@ -2,7 +2,7 @@ import React from "react";
 import { MdDashboard, MdLogout } from "react-icons/md";
 import { GoGear } from "react-icons/go";
 import { MdOutlineInventory2 } from "react-icons/md";
-import { PiCalculatorThin } from "react-icons/pi";
+import { PiCalculatorThin, PiListBulletsBold } from "react-icons/pi";
 import { GrPowerCycle } from "react-icons/gr";
 import UserAvatar from "./Avatar";
 
@@ -43,7 +43,14 @@ const CashierSideBar = ({ onMenuItemClick }) => {
                 onClick={() => onMenuItemClick("Transaction")}
               >
                 <PiCalculatorThin className="h-[30px] w-[30px]" />
-                <span className="p-2 rounded-md">Transaction</span>
+                <span className="p-2 rounded-md">Make Transaction</span>
+              </li>
+              <li
+                className={`flex rounded-md p-2 cursor-pointer hover:bg-[#01AB52] text-gray-600 text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-opacity-[90%] hover:rounded-lg`}
+                onClick={() => onMenuItemClick("TransactionList")}
+              >
+                <PiListBulletsBold className="h-[30px] w-[30px]" />
+                <span className="p-2 rounded-md">Transaction List</span>
               </li>
               <li
                 className={`flex rounded-md p-2 cursor-pointer hover:bg-[#01AB52] text-gray-600 text-sm items-center gap-x-4 mt-2 bg-light-white hover:text-white hover:bg-opacity-[90%] hover:rounded-lg`}

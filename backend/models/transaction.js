@@ -14,13 +14,16 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.hasMany(models.TransactionItem, {
         foreignKey: "transactionId",
       });
+      Transaction.belongsTo(models.User, {
+        foreignKey: "userId",
+      });
     }
   }
   Transaction.init(
     {
       totalPrice: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,
-      transactionDate: DataTypes.DATEONLY,
+      transactionDate: DataTypes.DATE,
     },
     {
       sequelize,

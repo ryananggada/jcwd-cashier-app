@@ -1,5 +1,5 @@
 const { Model } = require("sequelize");
-const { Transaction, TransactionItem, Product } = require("../models");
+const { Transaction, TransactionItem, Product, User } = require("../models");
 
 exports.handleNewTransaction = async (req, res) => {
   const { products, totalPrice } = req.body;
@@ -29,11 +29,16 @@ exports.handleNewTransaction = async (req, res) => {
 
 exports.getAllTransaction = async (req, res) => {
   const transactions = await Transaction.findAll({
-    include: {
-      model: TransactionItem,
-      as: "TransactionItems", // Use the correct alias
-      include: "product"
-    },
+    include: [
+      {
+        model: TransactionItem,
+        as: "TransactionItems", // Use the correct alias
+      },
+      {
+        model: User,
+        as: "User",
+      },
+    ],
   });
 
   res.json({
